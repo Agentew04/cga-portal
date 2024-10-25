@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Portal.Player {
+namespace PortalGame.Player {
 
     public enum PortalType {
         None,
@@ -35,14 +35,21 @@ namespace Portal.Player {
         private ParticleSystem outerParticles;
 
         [SerializeField]
+        private ParticleSystem projectileParticle;
+
+        [SerializeField]
         private AudioSource audioSource;
 
-        private ParticleSystemRenderer particleRenderer;
+        private ParticleSystemRenderer outerParticleRenderer;
+        private ParticleSystemRenderer projectileParticleRenderer;
         private AudioManager audioMngr;
+        private Animator animator;
 
         private void Start() {
-            particleRenderer = outerParticles.gameObject.GetComponent<ParticleSystemRenderer>();
+            outerParticleRenderer = outerParticles.gameObject.GetComponent<ParticleSystemRenderer>();
+            projectileParticleRenderer = projectileParticle.gameObject.GetComponent<ParticleSystemRenderer>();
             audioMngr = FindObjectOfType<AudioManager>();
+            animator = GetComponent<Animator>();
         }
 
         private void Update() {
@@ -51,11 +58,14 @@ namespace Portal.Player {
 
             if (LastPortal == PortalType.Blue) {
                 innerLight.color = blueColor;
-                particleRenderer.material.color = blueColor;
-            }else if(LastPortal == PortalType.Orange){
+                outerParticleRenderer.material.color = blueColor;
+                projectileParticleRenderer.material.color = blueColor;
+            } else if(LastPortal == PortalType.Orange){
                 innerLight.color = orangeColor;
-                particleRenderer.material.color = orangeColor;
+                outerParticleRenderer.material.color = orangeColor;
+                projectileParticleRenderer.material.color = orangeColor;
             }
+
         }
 
         /// <summary>
@@ -64,17 +74,31 @@ namespace Portal.Player {
         /// <param name="portal"></param>
         public void Shoot(PortalType portal) {
 
+            // atualiza portal
             LastPortal = portal;
+
+            // toca som
             if (audioSource.isPlaying) {
                 audioSource.Stop();
             }
-            if(portal == PortalType.Blue) {
+            if (portal == PortalType.Blue) {
                 audioSource.clip = audioMngr.GetAudio(AudioType.GunShootBlue);
                 audioSource.Play();
             } else if(portal == PortalType.Orange) {
                 audioSource.clip = audioMngr.GetAudio(AudioType.GunShootOrange);
                 audioSource.Play();
             }
+
+            // lanca projetil
+            projectileParticle.gameObject.SetActive(true); // ele se auto desliga
+            projectileParticle.lights.light.color = portal == PortalType.Blue ? blueColor : orangeColor;
+            if (projectileParticle.isPlaying) {
+                projectileParticle.Stop();
+            }
+            projectileParticle.Play();
+
+            // animacao do recoil
+            animator.SetTrigger("Shoot");
         }
     }
 }

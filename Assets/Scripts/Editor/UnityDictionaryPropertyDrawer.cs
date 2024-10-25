@@ -1,11 +1,15 @@
 using System;
 using UnityEngine;
 using UnityEditor;
-using Portal.Models;
+using PortalGame.Models;
 using System.Reflection;
 
-//[CustomPropertyDrawer(typeof)]
+/// <summary>
+/// <see cref="PropertyDrawer"/> que mostra no inspetor
+/// um tipo de dicionario customizado.
+/// </summary>
 [CustomPropertyDrawer(typeof(UnityDictionary<,>))]
+
 public class UnityDictionaryPropertyDrawer : PropertyDrawer {
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
@@ -38,8 +42,7 @@ public class UnityDictionaryPropertyDrawer : PropertyDrawer {
 
                 // Display Key and Value using appropriate fields
                 var newKey = EditorGUI.EnumPopup(keyRect, (Enum)key);
-                var newValue = EditorGUI.ObjectField(valueRect, (UnityEngine.Object)value, typeof(UnityEngine.Object), true);
-
+                var newValue = EditorGUI.ObjectField(valueRect, (UnityEngine.Object)value, value.GetType(), true);
                 // Set the new key and value
                 keyField.SetValue(element, newKey);
                 valueField.SetValue(element, newValue);
