@@ -2,6 +2,7 @@ using PortalGame.PortalSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 // deixa usar '?' para objetos que podem ser nulos
 #nullable enable
@@ -25,7 +26,7 @@ namespace PortalGame.Player {
         public Portal? BluePortal { get; set; } = null;
 
         private void Start() {
-
+            RenderPipelineManager.beginCameraRendering += RenderPortals;
         }
 
         private void Update() {
@@ -37,18 +38,22 @@ namespace PortalGame.Player {
             }
         }
 
-        private void OnPreCull() {
+        private void RenderPortals(ScriptableRenderContext ctx, Camera cam) {
             if(BluePortal == null || RedPortal == null) {
                 return;
             }
-            //BluePortal.PrePortalRender();
-            //RedPortal.PrePortalRender();
+            if(cam != Camera.main) {
+                Debug.Log("Nao era main");
+                return;
+            }
+            BluePortal.PrePortalRender(ctx);
+            RedPortal.PrePortalRender(ctx);
 
-            //BluePortal.Render();
-            //RedPortal.Render();
+            BluePortal.Render(ctx);
+            RedPortal.Render(ctx);
 
-            //BluePortal.PostPortalRender();
-            //RedPortal.PostPortalRender();
+            BluePortal.PostPortalRender(ctx);
+            RedPortal.PostPortalRender(ctx);
         }
 
         private void Click(PortalType type) {
@@ -67,20 +72,24 @@ namespace PortalGame.Player {
                     BluePortal = CreatePortal();
                 } else {
                     // apenas reposiciona o portal
-                    BluePortal.transform.position = hit.point;
+                    BluePortal.transform.position = hit.point + hit.normal * 0.01f;
                 }
             } else {
                 if (RedPortal == null) {
                     RedPortal = CreatePortal();
                 } else {
                     // apenas reposiciona o portal
-                    RedPortal.transform.position = hit.point;
+                    RedPortal.transform.position = hit.point + hit.normal * 0.01f;
                 }
             }
         }
 
         private Portal CreatePortal() {
             return null;
+        }
+
+        private void OnDisable() {
+            RenderPipelineManager.beginCameraRendering -= RenderPortals;
         }
     }
 }
