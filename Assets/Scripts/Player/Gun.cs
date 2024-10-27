@@ -38,6 +38,9 @@ namespace PortalGame.Player {
         private ParticleSystem projectileParticle;
 
         [SerializeField]
+        private Transform desiredProjectilePosition;
+
+        [SerializeField]
         private AudioSource audioSource;
 
         private ParticleSystemRenderer outerParticleRenderer;
@@ -53,6 +56,8 @@ namespace PortalGame.Player {
         }
 
         private void Update() {
+            projectileParticle.transform.position = desiredProjectilePosition.position;
+            projectileParticle.transform.rotation = desiredProjectilePosition.rotation;
             innerLight.gameObject.SetActive(LastPortal != PortalType.None);
             outerParticles.gameObject.SetActive(LastPortal != PortalType.None);
 

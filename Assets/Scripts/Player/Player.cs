@@ -1,4 +1,3 @@
-using PortalGame.PortalSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,14 +45,14 @@ namespace PortalGame.Player {
                 Debug.Log("Nao era main");
                 return;
             }
-            BluePortal.PrePortalRender(ctx);
-            RedPortal.PrePortalRender(ctx);
+            BluePortal.PrePortalRender();
+            RedPortal.PrePortalRender();
 
             BluePortal.Render(ctx);
             RedPortal.Render(ctx);
 
-            BluePortal.PostPortalRender(ctx);
-            RedPortal.PostPortalRender(ctx);
+            BluePortal.PostPortalRender();
+            RedPortal.PostPortalRender();
         }
 
         private void Click(PortalType type) {
