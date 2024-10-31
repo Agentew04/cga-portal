@@ -35,6 +35,9 @@ namespace PortalGame.Player {
         private MeshRenderer coreGlow;
 
         [SerializeField]
+        private MeshRenderer indicatorGlow;
+
+        [SerializeField]
         [Range(1, 10)]
         private float glowIntensity = 1.0f;
 
@@ -68,6 +71,7 @@ namespace PortalGame.Player {
             innerLight.gameObject.SetActive(LastPortal != PortalType.None);
             outerParticles.gameObject.SetActive(LastPortal != PortalType.None);
             coreGlow.gameObject.SetActive(LastPortal != PortalType.None);
+            indicatorGlow.gameObject.SetActive(LastPortal != PortalType.None);
 
             Color color = LastPortal == PortalType.Blue ? blueColor : orangeColor;
             Color colorEmission = color * (Mathf.Pow(2, glowIntensity));
@@ -75,6 +79,7 @@ namespace PortalGame.Player {
             outerParticleRenderer.material.color = color;
             projectileParticleRenderer.material.color = color;
             coreGlow.material.SetColor("_EmissionColor", colorEmission);
+            indicatorGlow.material.SetColor("_EmissionColor", colorEmission);
         }
 
         /// <summary>
