@@ -12,6 +12,8 @@ public class Portal : MonoBehaviour
     public MeshRenderer screen;
     public int recursionLimit = 5;
 
+    public Collider LinkedCollider { get; set; }
+
     [Header("Advanced Settings")]
     public float nearClipOffset = 0.05f;
     public float nearClipLimit = 0.2f;
@@ -22,6 +24,8 @@ public class Portal : MonoBehaviour
     Camera portalCam;
     Camera playerCam;
     Material firstRecursionMat;
+
+    [SerializeField]
     List<PortalTraveller> trackedTravellers;
     MeshFilter screenMeshFilter;
 
@@ -329,6 +333,7 @@ public class Portal : MonoBehaviour
             traveller.EnterPortalThreshold(isRotated);
             traveller.previousOffsetFromPortal = traveller.transform.position - transform.position;
             trackedTravellers.Add(traveller);
+            Physics.IgnoreCollision(traveller.GetComponent<Collider>(), LinkedCollider);
         }
     }
 
@@ -348,6 +353,7 @@ public class Portal : MonoBehaviour
         {
             traveller.ExitPortalThreshold(isRotated);
             trackedTravellers.Remove(traveller);
+            Physics.IgnoreCollision(traveller.GetComponent<Collider>(), LinkedCollider, false);
         }
     }
 

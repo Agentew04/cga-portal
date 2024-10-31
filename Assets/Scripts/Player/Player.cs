@@ -18,6 +18,9 @@ namespace PortalGame.Player {
         [SerializeField]
         private Gun gun;
 
+        [SerializeField]
+        private GameObject portalPrefab;
+
         [field: SerializeField]
         public Portal? RedPortal { get; set; } = null;
 
@@ -42,7 +45,6 @@ namespace PortalGame.Player {
                 return;
             }
             if(cam != Camera.main) {
-                Debug.Log("Nao era main");
                 return;
             }
             BluePortal.PrePortalRender();
@@ -63,28 +65,50 @@ namespace PortalGame.Player {
                 return;
             }
 
-            Debug.Log("Hit: " + hit.collider.gameObject.name);
             Debug.DrawLine(ray.origin, hit.point, Color.red, 5);
             gun.Shoot(type); // toca som e muda cor da arma
             if(type == PortalType.Blue) {
+                // cria o portal
                 if(BluePortal == null) {
-                    BluePortal = CreatePortal();
-                } else {
-                    // apenas reposiciona o portal
-                    BluePortal.transform.position = hit.point + hit.normal * 0.01f;
+                    BluePortal = CreatePortal(type);
+                    if (RedPortal != null) {
+                        // linka os dois
+                        BluePortal.linkedPortal = RedPortal;
+                        RedPortal.linkedPortal = BluePortal;
+                    }
                 }
+
+                // reposiciona o portal
+                BluePortal.transform.SetPositionAndRotation(
+                    position: hit.collider.transform.position + hit.normal * 0.01f, 
+                    rotation: Quaternion.LookRotation(hit.normal)
+                );
+                BluePortal.LinkedCollider = hit.collider;
             } else {
+                // cria o portal
                 if (RedPortal == null) {
-                    RedPortal = CreatePortal();
-                } else {
-                    // apenas reposiciona o portal
-                    RedPortal.transform.position = hit.point + hit.normal * 0.01f;
-                }
+                    RedPortal = CreatePortal(type);
+                    if (BluePortal != null) {
+                        // linka os dois
+                        BluePortal.linkedPortal = RedPortal;
+                        RedPortal.linkedPortal = BluePortal;
+                    }
+                } 
+
+                // reposiciona o portal
+                RedPortal.transform.SetPositionAndRotation(
+                    position: hit.collider.transform.position + hit.normal * 0.01f, 
+                    rotation: Quaternion.LookRotation(-hit.normal)
+                );
+                RedPortal.LinkedCollider = hit.collider;
             }
         }
 
-        private Portal CreatePortal() {
-            return null;
+        private Portal CreatePortal(PortalType type) {
+            GameObject portal = Instantiate(portalPrefab, Vector3.zero, Quaternion.identity);
+            portal.name = "Portal " + type;
+            // definir cor certa do portal aqui
+            return portal.GetComponent<Portal>();
         }
 
         private void OnDisable() {
