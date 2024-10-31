@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine;
 
-namespace PortalGame.Models {
+namespace PortalGame {
     [Serializable]
     public class UnityDictionary<K, V> : IEnumerable<UnityDictionary<K, V>.KeyValuePair>
                                         where K : Enum {

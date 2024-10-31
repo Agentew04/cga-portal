@@ -27,6 +27,13 @@ namespace PortalGame.Player {
         [SerializeField]
         private Color orangeColor = new(1.0f, 0.5f, 0.0f, 1.0f);
 
+        [SerializeField]
+        private AnimationCurve innerGlowCurve;
+
+        [SerializeField]
+        private AnimationCurve indicatorGlowCurve;
+
+
         [Header("Referencias")]
         [SerializeField]
         private Light innerLight;
@@ -36,10 +43,6 @@ namespace PortalGame.Player {
 
         [SerializeField]
         private MeshRenderer indicatorGlow;
-
-        [SerializeField]
-        [Range(1, 10)]
-        private float glowIntensity = 1.0f;
 
         [SerializeField]
         private ParticleSystem outerParticles;
@@ -74,12 +77,15 @@ namespace PortalGame.Player {
             indicatorGlow.gameObject.SetActive(LastPortal != PortalType.None);
 
             Color color = LastPortal == PortalType.Blue ? blueColor : orangeColor;
-            Color colorEmission = color * (Mathf.Pow(2, glowIntensity));
+            float innerGlowIntensity = innerGlowCurve.Evaluate(Time.time);
+            float outerGlowIntensity = indicatorGlowCurve.Evaluate(Time.time);
+            Color innerEmission = color * (Mathf.Pow(2, innerGlowIntensity));
+            Color outerEmission = color * (Mathf.Pow(2, outerGlowIntensity));
             innerLight.color = color;
             outerParticleRenderer.material.color = color;
             projectileParticleRenderer.material.color = color;
-            coreGlow.material.SetColor("_EmissionColor", colorEmission);
-            indicatorGlow.material.SetColor("_EmissionColor", colorEmission);
+            coreGlow.material.SetColor("_EmissionColor", innerEmission);
+            indicatorGlow.material.SetColor("_EmissionColor", outerEmission);
         }
 
         /// <summary>
@@ -95,6 +101,7 @@ namespace PortalGame.Player {
             if (audioSource.isPlaying) {
                 audioSource.Stop();
             }
+
             if (portal == PortalType.Blue) {
                 audioSource.clip = audioMngr.GetAudio(AudioType.GunShootBlue);
                 audioSource.Play();

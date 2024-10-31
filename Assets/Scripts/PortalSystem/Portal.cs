@@ -126,7 +126,7 @@ public class Portal : MonoBehaviour
 
         // Hide screen so that camera can see through portal
         screen.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
-        linkedPortal.screen.material.SetInt("displayMask", 0);
+        linkedPortal.screen.material.SetInteger("displayMask", 0);
 
         for (int i = startIndex; i < recursionLimit; i++)
         {
@@ -137,7 +137,7 @@ public class Portal : MonoBehaviour
 
             if (i == startIndex)
             {
-                linkedPortal.screen.material.SetInt("displayMask", 1);
+                linkedPortal.screen.material.SetInteger("displayMask", 1);
             }
         }
 

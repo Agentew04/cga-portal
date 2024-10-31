@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-// deixa usar '?' para objetos que podem ser nulos
-#nullable enable
-
 namespace PortalGame.Player {
 
     /// <summary>
@@ -22,10 +19,10 @@ namespace PortalGame.Player {
         private GameObject portalPrefab;
 
         [field: SerializeField]
-        public Portal? RedPortal { get; set; } = null;
+        public Portal RedPortal { get; set; } = null;
 
         [field: SerializeField]
-        public Portal? BluePortal { get; set; } = null;
+        public Portal BluePortal { get; set; } = null;
 
         private void Start() {
             RenderPipelineManager.beginCameraRendering += RenderPortals;
@@ -65,6 +62,8 @@ namespace PortalGame.Player {
                 return;
             }
 
+            bool validSurface = hit.collider.gameObject.layer == LayerMask.NameToLayer("Portalable");
+            
             Debug.DrawLine(ray.origin, hit.point, Color.red, 5);
             gun.Shoot(type); // toca som e muda cor da arma
             if(type == PortalType.Blue) {
@@ -101,6 +100,12 @@ namespace PortalGame.Player {
                     rotation: Quaternion.LookRotation(-hit.normal)
                 );
                 RedPortal.LinkedCollider = hit.collider;
+            }
+
+            // avisa a torreta
+            Turret[] turrets = FindObjectsOfType<Turret>();
+            foreach(Turret turret in turrets) {
+                turret.GiveHint(hit.point);
             }
         }
 
