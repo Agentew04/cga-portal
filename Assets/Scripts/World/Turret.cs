@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace PortalGame {
+namespace PortalGame.World {
 
     /// <summary>
     /// Classe que gerencia toda a logica do inimigo.

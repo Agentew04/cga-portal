@@ -13,6 +13,8 @@ namespace PortalGame {
         PortalEnter,
         PortalBlueOpen,
         PortalOrangeOpen,
+        DoorOpen,
+        DoorClose
     }
 
     public class AudioManager : MonoBehaviour {
