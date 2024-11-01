@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,60 +59,58 @@ namespace PortalGame.Player {
 
         private ParticleSystemRenderer outerParticleRenderer;
         private ParticleSystemRenderer projectileParticleRenderer;
-        private AudioManager audioMngr;
         private Animator animator;
+        private Action projectileCallback;
 
         private void Start() {
             outerParticleRenderer = outerParticles.gameObject.GetComponent<ParticleSystemRenderer>();
             projectileParticleRenderer = projectileParticle.gameObject.GetComponent<ParticleSystemRenderer>();
-            audioMngr = FindObjectOfType<AudioManager>();
             animator = GetComponent<Animator>();
         }
 
         private void Update() {
             projectileParticle.transform.position = desiredProjectilePosition.position;
             projectileParticle.transform.rotation = desiredProjectilePosition.rotation;
-            innerLight.gameObject.SetActive(LastPortal != PortalType.None);
-            outerParticles.gameObject.SetActive(LastPortal != PortalType.None);
-            coreGlow.gameObject.SetActive(LastPortal != PortalType.None);
-            indicatorGlow.gameObject.SetActive(LastPortal != PortalType.None);
-
-            Color color = LastPortal == PortalType.Blue ? blueColor : orangeColor;
-            float innerGlowIntensity = innerGlowCurve.Evaluate(Time.time);
-            float outerGlowIntensity = indicatorGlowCurve.Evaluate(Time.time);
-            Color innerEmission = color * (Mathf.Pow(2, innerGlowIntensity));
-            Color outerEmission = color * (Mathf.Pow(2, outerGlowIntensity));
-            innerLight.color = color;
-            outerParticleRenderer.material.color = color;
-            projectileParticleRenderer.material.color = color;
-            coreGlow.material.SetColor("_EmissionColor", innerEmission);
-            indicatorGlow.material.SetColor("_EmissionColor", outerEmission);
+            //outerParticles.gameObject.SetActive(false/*LastPortal != PortalType.None*/);
         }
 
         /// <summary>
-        /// Muda a cor da portal gun e toca audio
+        /// Muda a cor da portal gun, toca audio e joga
+        /// o projetil do portal. Invoca callback quando
+        /// a particula colide.
         /// </summary>
-        /// <param name="portal"></param>
-        public void Shoot(PortalType portal) {
+        /// <param name="portal">O tipo de portal jogado</param>
+        /// <param name="callback">Callback chamado quando a particula colide</param>
+        /// <param name="validSurface">Se a superficie atingida eh valida para o portal</param>
+        public void ShootProjectile(PortalType portal, bool validSurface, Action callback) {
+            projectileCallback = callback;
 
             // atualiza portal
             LastPortal = portal;
 
-            // toca som
             if (audioSource.isPlaying) {
                 audioSource.Stop();
             }
 
-            if (portal == PortalType.Blue) {
-                audioSource.clip = audioMngr.GetAudio(AudioType.GunShootBlue);
-                audioSource.Play();
+            // define o som que vai tocar
+            Debug.Log("Is valid: " + validSurface);
+            if(!validSurface) {
+                audioSource.clip = AudioManager.Instance.GetAudio(AudioType.GunShootInvalidSurface);
+                Debug.Log("Invalid surface Audio");
+            }else if (portal == PortalType.Blue) {
+                audioSource.clip = AudioManager.Instance.GetAudio(AudioType.GunShootBlue);
+                Debug.Log("Blue audio");
             } else if(portal == PortalType.Orange) {
-                audioSource.clip = audioMngr.GetAudio(AudioType.GunShootOrange);
-                audioSource.Play();
+                audioSource.clip = AudioManager.Instance.GetAudio(AudioType.GunShootOrange);
+                Debug.Log("Orange audio");
+            } else {
+                Debug.Log("no audio");
+                audioSource.clip = null;
             }
+            audioSource.Play();
 
             // lanca projetil
-            projectileParticle.gameObject.SetActive(true); // ele se auto desliga
+            projectileParticle.gameObject.SetActive(true); // ele se auto desliga             
             projectileParticle.lights.light.color = portal == PortalType.Blue ? blueColor : orangeColor;
             if (projectileParticle.isPlaying) {
                 projectileParticle.Stop();
@@ -120,6 +119,32 @@ namespace PortalGame.Player {
 
             // animacao do recoil
             animator.SetTrigger("Shoot");
+
+            // muda a cor da arma
+            UpdateGunColor();
+        }
+    
+        /// <summary>
+        /// Chamado pelo script <see cref="ParticleListener"/>.
+        /// </summary>
+        public void OnParticleCollided() {
+            projectileCallback?.Invoke();
+        }    
+
+        private void UpdateGunColor() {
+            innerLight.gameObject.SetActive(LastPortal != PortalType.None);
+            coreGlow.gameObject.SetActive(LastPortal != PortalType.None);
+            indicatorGlow.gameObject.SetActive(LastPortal != PortalType.None);
+
+            Color color = LastPortal == PortalType.Blue ? blueColor : orangeColor;
+            float innerGlowIntensity = innerGlowCurve.Evaluate(Time.time);
+            float outerGlowIntensity = indicatorGlowCurve.Evaluate(Time.time);
+            Color innerEmission = color * Mathf.Pow(2, innerGlowIntensity);
+            Color outerEmission = color * Mathf.Pow(2, outerGlowIntensity);
+            innerLight.color = color;
+            projectileParticleRenderer.material.color = color;
+            coreGlow.material.SetColor("_EmissionColor", innerEmission);
+            indicatorGlow.material.SetColor("_EmissionColor", outerEmission);
         }
     }
 }

@@ -24,7 +24,9 @@ namespace PortalGame {
                 if (instance == null) {
                     instance = value;
                 } else {
-                    Destroy(value.gameObject);
+                    if(value != null) {
+                        Destroy(value.gameObject);
+                    }
                 }
             }
         }
@@ -53,6 +55,24 @@ namespace PortalGame {
             }
 
             return availableAudios.ElementAt(Random.Range(0, availableAudios.Count())).Value;
+        }
+
+        private void OnDestroy() {
+            if (Instance == this) {
+                Instance = null;
+            }
+        }
+
+        private void OnEnable() {
+            if (Instance == null) {
+                Instance = this; // auto destroi se ja houver
+            }
+        }
+
+        private void OnDisable() {
+            if (Instance == this) {
+                Instance = null;
+            }
         }
     }
 }

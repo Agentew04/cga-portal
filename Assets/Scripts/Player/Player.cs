@@ -65,42 +65,46 @@ namespace PortalGame.Player {
             bool validSurface = hit.collider.gameObject.layer == LayerMask.NameToLayer("Portalable");
             
             Debug.DrawLine(ray.origin, hit.point, Color.red, 5);
-            gun.Shoot(type); // toca som e muda cor da arma
-            if(type == PortalType.Blue) {
-                // cria o portal
-                if(BluePortal == null) {
-                    BluePortal = CreatePortal(type);
-                    if (RedPortal != null) {
-                        // linka os dois
-                        BluePortal.linkedPortal = RedPortal;
-                        RedPortal.linkedPortal = BluePortal;
-                    }
+            gun.ShootProjectile(type, validSurface, () => {
+                if (!validSurface) {
+                    return;
                 }
-
-                // reposiciona o portal
-                BluePortal.transform.SetPositionAndRotation(
-                    position: hit.collider.transform.position + hit.normal * 0.01f, 
-                    rotation: Quaternion.LookRotation(hit.normal)
-                );
-                BluePortal.LinkedCollider = hit.collider;
-            } else {
-                // cria o portal
-                if (RedPortal == null) {
-                    RedPortal = CreatePortal(type);
-                    if (BluePortal != null) {
-                        // linka os dois
-                        BluePortal.linkedPortal = RedPortal;
-                        RedPortal.linkedPortal = BluePortal;
+                if(type == PortalType.Blue) {
+                    // cria o portal
+                    if(BluePortal == null) {
+                        BluePortal = CreatePortal(type);
+                        if (RedPortal != null) {
+                            // linka os dois
+                            BluePortal.linkedPortal = RedPortal;
+                            RedPortal.linkedPortal = BluePortal;
+                        }
                     }
-                } 
 
-                // reposiciona o portal
-                RedPortal.transform.SetPositionAndRotation(
-                    position: hit.collider.transform.position + hit.normal * 0.01f, 
-                    rotation: Quaternion.LookRotation(-hit.normal)
-                );
-                RedPortal.LinkedCollider = hit.collider;
-            }
+                    // reposiciona o portal
+                    BluePortal.transform.SetPositionAndRotation(
+                        position: hit.collider.transform.position + hit.normal * 0.01f, 
+                        rotation: Quaternion.LookRotation(hit.normal)
+                    );
+                    BluePortal.LinkedCollider = hit.collider;
+                } else {
+                    // cria o portal
+                    if (RedPortal == null) {
+                        RedPortal = CreatePortal(type);
+                        if (BluePortal != null) {
+                            // linka os dois
+                            BluePortal.linkedPortal = RedPortal;
+                            RedPortal.linkedPortal = BluePortal;
+                        }
+                    } 
+
+                    // reposiciona o portal
+                    RedPortal.transform.SetPositionAndRotation(
+                        position: hit.collider.transform.position + hit.normal * 0.01f, 
+                        rotation: Quaternion.LookRotation(-hit.normal)
+                    );
+                    RedPortal.LinkedCollider = hit.collider;
+                }
+            });
 
             // avisa a torreta
             Turret[] turrets = FindObjectsOfType<Turret>();
