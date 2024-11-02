@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PortalGame.Player {
@@ -71,7 +69,16 @@ namespace PortalGame.Player {
         private void Update() {
             projectileParticle.transform.position = desiredProjectilePosition.position;
             projectileParticle.transform.rotation = desiredProjectilePosition.rotation;
-            //outerParticles.gameObject.SetActive(false/*LastPortal != PortalType.None*/);
+            UpdateLightEmission(LastPortal == PortalType.Blue ? blueColor : orangeColor);
+        }
+
+        private void UpdateLightEmission(Color color) {
+            float innerGlowIntensity = innerGlowCurve.Evaluate(Time.time);
+            float outerGlowIntensity = indicatorGlowCurve.Evaluate(Time.time);
+            Color innerEmission = color * Mathf.Pow(2, innerGlowIntensity);
+            Color outerEmission = color * Mathf.Pow(2, outerGlowIntensity);
+            coreGlow.material.SetColor("_EmissionColor", innerEmission);
+            indicatorGlow.material.SetColor("_EmissionColor", outerEmission);
         }
 
         /// <summary>
@@ -137,14 +144,9 @@ namespace PortalGame.Player {
             indicatorGlow.gameObject.SetActive(LastPortal != PortalType.None);
 
             Color color = LastPortal == PortalType.Blue ? blueColor : orangeColor;
-            float innerGlowIntensity = innerGlowCurve.Evaluate(Time.time);
-            float outerGlowIntensity = indicatorGlowCurve.Evaluate(Time.time);
-            Color innerEmission = color * Mathf.Pow(2, innerGlowIntensity);
-            Color outerEmission = color * Mathf.Pow(2, outerGlowIntensity);
             innerLight.color = color;
             projectileParticleRenderer.material.color = color;
-            coreGlow.material.SetColor("_EmissionColor", innerEmission);
-            indicatorGlow.material.SetColor("_EmissionColor", outerEmission);
+            UpdateLightEmission(color);
         }
     }
 }
