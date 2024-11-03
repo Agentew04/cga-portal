@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Linq;
 
 namespace PortalGame.World {
 
@@ -50,6 +51,16 @@ namespace PortalGame.World {
         [SerializeField]
         private Vector3 currentHintPosition;
 
+        [Header("Visual e Referencias")]
+        [SerializeField]
+        private Renderer[] eyeMesh;
+
+        [SerializeField]
+        private float defaultEyeGlow;
+
+        [SerializeField]
+        private float targetAquiredEyeGlow;
+
 
         #region Private Vars
 
@@ -91,10 +102,12 @@ namespace PortalGame.World {
 
             // fazer raycasts
             var layermask = LayerMask.GetMask("Player");
+            bool seesPlayer = false;
             foreach (var ray in rays) {
                 if (Physics.Raycast(ray, out var hit, viewDistance, layermask)) {
                     if (hit.collider.CompareTag("Player")) {
                         Debug.DrawLine(ray.origin, ray.origin + ray.direction * viewDistance, Color.green);
+                        seesPlayer = true;
                     } else {
                         Debug.DrawLine(ray.origin, ray.origin + ray.direction * viewDistance, Color.red);
                     }
@@ -102,6 +115,14 @@ namespace PortalGame.World {
                     Debug.DrawLine(ray.origin, ray.origin + ray.direction * viewDistance, Color.red);
                 }
             }
+            IEnumerable<Material> mats = eyeMesh
+                .Select(x => x.materials.First(x => x.name.Contains("TurretEye")));
+            if(mats.Any(x => x == null) || !mats.Any()) {
+                Debug.LogError("Material nao encontrado");
+                return;
+            }
+            Color glowColor = Color.red * Mathf.Pow(2, seesPlayer ? targetAquiredEyeGlow : defaultEyeGlow);
+            mats.ForEach(x => x.SetColor("_EmissionColor", glowColor));
         }
 
         private void Update() {
@@ -111,11 +132,6 @@ namespace PortalGame.World {
             if (canPatrol) {
                 Patrol();
             }
-            //if (currentHintPosition != Vector3.zero) {
-            //    GoToHint();
-            //} else {
-            //    // patrulhe
-            //}
         }
 
         private void GoToHint() {

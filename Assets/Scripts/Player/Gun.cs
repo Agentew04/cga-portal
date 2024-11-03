@@ -11,11 +11,6 @@ namespace PortalGame.Player {
 
     public class Gun : MonoBehaviour {
 
-        public enum GunSound {
-            ShootBluePortal,
-            ShootOrangePortal,
-        }
-
         [field: Header("Configuracoes")]
         [field: SerializeField]
         public PortalType LastPortal { get; set; } = PortalType.Blue;
@@ -55,20 +50,19 @@ namespace PortalGame.Player {
         [SerializeField]
         private AudioSource audioSource;
 
-        private ParticleSystemRenderer outerParticleRenderer;
         private ParticleSystemRenderer projectileParticleRenderer;
         private Animator animator;
         private Action projectileCallback;
 
         private void Start() {
-            outerParticleRenderer = outerParticles.gameObject.GetComponent<ParticleSystemRenderer>();
             projectileParticleRenderer = projectileParticle.gameObject.GetComponent<ParticleSystemRenderer>();
             animator = GetComponent<Animator>();
         }
 
         private void Update() {
-            projectileParticle.transform.position = desiredProjectilePosition.position;
-            projectileParticle.transform.rotation = desiredProjectilePosition.rotation;
+            projectileParticle.transform.SetPositionAndRotation(
+                position: desiredProjectilePosition.position, 
+                rotation: desiredProjectilePosition.rotation);
             UpdateLightEmission(LastPortal == PortalType.Blue ? blueColor : orangeColor);
         }
 
@@ -100,18 +94,13 @@ namespace PortalGame.Player {
             }
 
             // define o som que vai tocar
-            Debug.Log("Is valid: " + validSurface);
             if(!validSurface) {
                 audioSource.clip = AudioManager.Instance.GetAudio(AudioType.GunShootInvalidSurface);
-                Debug.Log("Invalid surface Audio");
             }else if (portal == PortalType.Blue) {
                 audioSource.clip = AudioManager.Instance.GetAudio(AudioType.GunShootBlue);
-                Debug.Log("Blue audio");
             } else if(portal == PortalType.Orange) {
                 audioSource.clip = AudioManager.Instance.GetAudio(AudioType.GunShootOrange);
-                Debug.Log("Orange audio");
             } else {
-                Debug.Log("no audio");
                 audioSource.clip = null;
             }
             audioSource.Play();

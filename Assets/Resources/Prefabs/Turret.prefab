@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5425489978570499995
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7884660959100621177}
+  m_Layer: 0
+  m_Name: Eye
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7884660959100621177
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5425489978570499995}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.5, y: 0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 135822798353839236}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 90}
 --- !u!1001 &8162798761398475569
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11,7 +42,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: d3d52f94797a3014ba58aa768df597a6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.7035294
+      value: -0.538
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d3d52f94797a3014ba58aa768df597a6,
         type: 3}
@@ -21,7 +52,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: d3d52f94797a3014ba58aa768df597a6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.20392811
+      value: -1.828
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d3d52f94797a3014ba58aa768df597a6,
         type: 3}
@@ -396,12 +427,12 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: d3d52f94797a3014ba58aa768df597a6,
         type: 3}
       propertyPath: m_Name
-      value: turret
+      value: Turret
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d3d52f94797a3014ba58aa768df597a6,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1545849887608136112, guid: d3d52f94797a3014ba58aa768df597a6,
         type: 3}
@@ -546,7 +577,11 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 7126207810634211173, guid: d3d52f94797a3014ba58aa768df597a6, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 8118472957566660533, guid: d3d52f94797a3014ba58aa768df597a6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7884660959100621177}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d3d52f94797a3014ba58aa768df597a6,
         type: 3}
@@ -569,6 +604,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6302543861330772757}
   m_SourcePrefab: {fileID: 100100000, guid: d3d52f94797a3014ba58aa768df597a6, type: 3}
+--- !u!4 &135822798353839236 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8118472957566660533, guid: d3d52f94797a3014ba58aa768df597a6,
+    type: 3}
+  m_PrefabInstance: {fileID: 8162798761398475569}
+  m_PrefabAsset: {fileID: 0}
 --- !u!137 &1305504741797410914 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -2065459406504746157, guid: d3d52f94797a3014ba58aa768df597a6,
@@ -701,8 +742,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 304953e5dbb78824384362ca4e397bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  patrolCenter: {fileID: 0}
-  patrolRadius: 2
+  canPatrol: 1
+  patrolPosition: {fileID: 0}
+  patrolRadius: 3
+  patrolDelay: 5
+  currentPatrolPosition: {x: 0, y: 0, z: 0}
+  eyePosition: {fileID: 7884660959100621177}
+  fieldOfView: 90
+  viewRaycasts: 10
+  viewDistance: 5
+  canHear: 1
+  hearingDistance: 5
+  currentHintPosition: {x: 0, y: 0, z: 0}
+  eyeMesh:
+  - {fileID: 1305504741797410914}
+  - {fileID: 4451346025187553964}
+  - {fileID: 4107080171076995777}
+  - {fileID: 7672219369677520678}
+  - {fileID: 2792684177148835823}
+  defaultEyeGlow: 2.7
+  targetAquiredEyeGlow: 10
 --- !u!195 &8401266328089013750
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -14,7 +14,6 @@ namespace PortalGame.Player {
                 Debug.LogError("Gun nao foi referenciada");
                 return;
             }
-            Debug.Log("Hit");
             gun.OnParticleCollided();
         }
     }

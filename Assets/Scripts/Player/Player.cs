@@ -25,11 +25,18 @@ namespace PortalGame.Player {
         [field: SerializeField]
         public Portal BluePortal { get; set; } = null;
 
+        private FirstPersonController fpsController;
+
         private void Start() {
             RenderPipelineManager.beginCameraRendering += RenderPortals;
+            fpsController = FindObjectOfType<FirstPersonController>();
         }
 
         private void Update() {
+
+            if (Input.GetKeyDown(KeyCode.F1)) {
+                fpsController.cameraCanMove.Toggle();
+            }
 
             if(Input.GetMouseButtonDown(0)){
                 Click(PortalType.Blue);

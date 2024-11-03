@@ -15,6 +15,9 @@ namespace PortalGame.World {
         [SerializeField]
         private float openingDistance = 2.0f;
 
+        [SerializeField]
+        private float audioDelay = 0.1f;
+
         [Header("Referencias")]
         [SerializeField]
         private Animator animator;
@@ -36,25 +39,10 @@ namespace PortalGame.World {
             }
             float distance = Vector3.Distance(player.transform.position, transform.position);
             if (useProximity && distance <= openingDistance && !IsOpen) {
-                Debug.Log("Abrindo porta");
                 Open();
             }else if(useProximity && distance > openingDistance && IsOpen) {
-                Debug.Log("Fechando porta");
                 Close();
             }
-
-            //// tenta corrigir desync
-            //if(IsOpen 
-            //    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Opening")
-            //    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Open")) {
-            //    Debug.Log("Corrigindo pra open");
-            //    animator.SetTrigger("Open");
-            //} else if (!IsOpen 
-            //    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Closing")
-            //    && !animator.GetCurrentAnimatorStateInfo(0).IsName("Closed")) {
-            //    Debug.Log("Corrigindo pra closed");
-            //    animator.SetTrigger("Close");
-            //}
         }
 
         public void Open() {
@@ -63,7 +51,7 @@ namespace PortalGame.World {
                 audioSource.Stop();
             }
             audioSource.clip = AudioManager.Instance.GetAudio(AudioType.DoorOpen);
-            audioSource.Play();
+            audioSource.PlayDelayed(audioDelay);
             IsOpen = true;
         }
 
