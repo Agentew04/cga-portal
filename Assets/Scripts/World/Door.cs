@@ -36,6 +36,9 @@ namespace PortalGame.World {
         [field: SerializeField]
         public bool IsLocked { get; set; } = false;
 
+        [field: SerializeField]
+        public Transform BackSide { get; set; }
+
         private void Start() {
             player = FindObjectOfType<FirstPersonController>();
         }
