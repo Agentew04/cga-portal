@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,9 @@ namespace PortalGame.World {
         private float openingDistance = 2.0f;
 
         [SerializeField]
+        private AutoOpenSide autoOpenSide;
+
+        [SerializeField]
         private float audioDelay = 0.1f;
 
         [Header("Referencias")]
@@ -25,20 +29,25 @@ namespace PortalGame.World {
         [SerializeField]
         private AudioSource audioSource;
 
-        private Player.Player player;
+        private FirstPersonController player;
 
         public bool IsOpen { get; private set; } = false;
 
+        [field: SerializeField]
+        public bool IsLocked { get; set; } = false;
+
         private void Start() {
-            player = FindObjectOfType<Player.Player>();
+            player = FindObjectOfType<FirstPersonController>();
         }
 
         private void Update() {
             if(player == null) {
-                player = FindObjectOfType<Player.Player>();
+                player = FindObjectOfType<FirstPersonController>();
             }
             float distance = Vector3.Distance(player.transform.position, transform.position);
-            if (useProximity && distance <= openingDistance && !IsOpen) {
+            AutoOpenSide side = GetSide(player.transform);
+            if (useProximity && distance <= openingDistance && !IsOpen && (side & autoOpenSide) != AutoOpenSide.None) {
+                Debug.Log("Side: " + side);
                 Open();
             }else if(useProximity && distance > openingDistance && IsOpen) {
                 Close();
@@ -46,6 +55,9 @@ namespace PortalGame.World {
         }
 
         public void Open() {
+            if (IsLocked) {
+                return;
+            }
             animator.SetTrigger("Open");
             if (audioSource.isPlaying) {
                 audioSource.Stop();
@@ -56,6 +68,9 @@ namespace PortalGame.World {
         }
 
         public void Close() {
+            if (IsLocked) {
+                return;
+            }
             animator.SetTrigger("Close");
             if (audioSource.isPlaying) {
                 audioSource.Stop();
@@ -63,6 +78,28 @@ namespace PortalGame.World {
             audioSource.clip = AudioManager.Instance.GetAudio(AudioType.DoorClose);
             audioSource.Play();
             IsOpen = false;
+        }
+
+        private AutoOpenSide GetSide(Transform other) {
+            Vector3 doorLocal = transform.localPosition;
+            Vector3 otherLocal = transform.InverseTransformPoint(other.position);
+            float dot = Vector3.Dot(doorLocal, otherLocal);
+            return SignToSide((int)Mathf.Sign(dot));
+        }
+
+        private static AutoOpenSide SignToSide(int sign) {
+            if (sign == 0) {
+                return AutoOpenSide.None;
+            }
+            return sign > 0 ? AutoOpenSide.Front : AutoOpenSide.Back;
+        }
+
+        [Flags, Serializable]
+        public enum AutoOpenSide {
+            None = 0,
+            Front = 1,
+            Back = 2,
+            Both = Front | Back,
         }
     }
 }
