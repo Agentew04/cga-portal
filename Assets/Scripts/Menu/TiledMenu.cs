@@ -38,12 +38,13 @@ namespace PortalGame.Menu {
         [SerializeField]
         private Canvas ui;
 
-        private readonly List<GameObject> tiles = new();
+        private readonly List<List<GameObject>> tiles = new();
         private bool isFrontRendering = true;
 
         private void Start() {
             CreateTiles();
 
+            PreHeatBackBuffer();
         }
 
         private void CreateTiles() {
@@ -51,7 +52,8 @@ namespace PortalGame.Menu {
             float width = 16.0f * resolution;
             float height = 9.0f * resolution;
             for (int x = 0; x < width; x++) {
-                for(int y = 0; y < height; y++) {
+                List<GameObject> line = new();
+                for (int y = 0; y < height; y++) {
                     // centra as coord
                     float xCoord = x - width * 0.5f;
                     float yCoord = y - height * 0.5f;
@@ -62,7 +64,7 @@ namespace PortalGame.Menu {
                         localPosition: new Vector3(xCoord + 0.5f, yCoord + 0.5f, cameraDistance), 
                         localRotation: Quaternion.identity);
                     tile.transform.localScale = Vector3.one;
-                    tiles.Add(tile);
+                    line.Add(tile);
                     var mr = tile.GetComponent<MeshRenderer>();
                     mr.material = menuMaterial;
                     Vector2 uv1 = new(x / width, y / height);
@@ -72,11 +74,18 @@ namespace PortalGame.Menu {
                     mr.material.SetTexture("_Front", renderTexture1);
                     mr.material.SetTexture("_Back", renderTexture2);
                 }
+                tiles.Add(line);
             }
 
             // configure camera size
             actualCamera.orthographicSize = 9.0f * resolution / 2.0f;
             actualCamera.farClipPlane = cameraDistance + 1;
+        }
+
+        private void PreHeatBackBuffer() {
+            uiCamera.targetTexture = renderTexture2;
+            uiCamera.Render();
+            uiCamera.targetTexture = renderTexture1;
         }
 
         public void Turn() {
@@ -89,16 +98,36 @@ namespace PortalGame.Menu {
             isFrontRendering.Toggle();
 
             // anima tiles
-            foreach (var tile in tiles) {
-                var t = LeanTween.rotateY(tile, 180, tileTurnTime)
-                    .setEaseInOutSine();
-                Debug.Log("rotating a tile");
+            Quaternion rotateAround = Quaternion.Euler(0, 180, 0);
+            float xAxisDelay = tileTurnTime / (16 * resolution);
+            float yAxisDelay = tileTurnTime / (9 * resolution);
+            for (int i = 0; i < tiles.Count; i++) {
+                for (int j = 0; j < tiles[i].Count; j++) {
+                    float delay = i * yAxisDelay + j * xAxisDelay;
+                    StartCoroutine(Rotate(tiles[i][j], rotateAround, delay));
+                }
             }
         }
 
+        private IEnumerator Rotate(GameObject obj, Quaternion rotation, float delay) {
+            yield return new WaitForSeconds(delay);
+            Quaternion startRotation = obj.transform.rotation;
+            Quaternion endRotation = startRotation * rotation;
+            float elapsedTime = 0;
+            while (elapsedTime < tileTurnTime) {
+                obj.transform.rotation = Quaternion.Slerp(startRotation, endRotation, elapsedTime / tileTurnTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            obj.transform.rotation = endRotation;
+        }
+
         private void OnDestroy() {
-            foreach (var tile in tiles) {
-                Destroy(tile);
+            foreach (var line in tiles) {
+                foreach (var tile in line) {
+                    Destroy(tile);
+                }
+                line.Clear();
             }
             tiles.Clear();
         }
