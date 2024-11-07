@@ -40,6 +40,8 @@ namespace PortalGame.Menu {
 
         private readonly List<List<GameObject>> tiles = new();
         private bool isFrontRendering = true;
+        private int targetFlippedTiles = 0;
+        private int flippedTiles = 0;
 
         private void Start() {
             CreateTiles();
@@ -89,6 +91,12 @@ namespace PortalGame.Menu {
         }
 
         public void Turn() {
+            if (flippedTiles < targetFlippedTiles) {
+                Debug.Log("Ja tem uma animacao em andamento");
+                return;
+            }
+            targetFlippedTiles = tiles.Count * tiles[0].Count;
+
             // swap back e front buffer
             if (isFrontRendering) {
                 uiCamera.targetTexture = renderTexture1;
@@ -120,6 +128,14 @@ namespace PortalGame.Menu {
                 yield return null;
             }
             obj.transform.rotation = endRotation;
+            flippedTiles++;
+
+            if (flippedTiles == targetFlippedTiles) {
+                // acabou a animacao
+                Debug.Log("Acabou a animacao");
+                flippedTiles = 0;
+                targetFlippedTiles = 0;
+            }
         }
 
         private void OnDestroy() {
