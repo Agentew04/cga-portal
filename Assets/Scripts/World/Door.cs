@@ -50,7 +50,6 @@ namespace PortalGame.World {
             float distance = Vector3.Distance(player.transform.position, transform.position);
             AutoOpenSide side = GetSide(player.transform);
             if (useProximity && distance <= openingDistance && !IsOpen && (side & autoOpenSide) != AutoOpenSide.None) {
-                Debug.Log("Side: " + side);
                 Open();
             }else if(useProximity && distance > openingDistance && IsOpen) {
                 Close();
@@ -102,7 +101,6 @@ namespace PortalGame.World {
             None = 0,
             Front = 1,
             Back = 2,
-            Both = Front | Back,
         }
     }
 }

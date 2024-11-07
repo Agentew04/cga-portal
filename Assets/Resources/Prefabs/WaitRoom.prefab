@@ -7751,6 +7751,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <EndDoorPosition>k__BackingField: {fileID: 996573686003828432}
+  endDoor: {fileID: 931474420388807192}
 --- !u!1 &3760880217383565860
 GameObject:
   m_ObjectHideFlags: 0
@@ -8137,7 +8138,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onTrigger:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1471248404496576601}
+        m_TargetAssemblyTypeName: PortalGame.World.WaitRoom, Assembly-CSharp
+        m_MethodName: LoadNextLevel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3876176284885206738
 GameObject:
   m_ObjectHideFlags: 0
@@ -13790,7 +13803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateRate: 0.1
-  chance: 0.021
+  chance: 0.608
 --- !u!1 &6742432705869754793
 GameObject:
   m_ObjectHideFlags: 0
@@ -16308,10 +16321,10 @@ ReflectionProbe:
   m_Mode: 1
   m_RefreshMode: 0
   m_TimeSlicingMode: 0
-  m_Resolution: 128
+  m_Resolution: 256
   m_UpdateFrequency: 0
-  m_BoxSize: {x: 8.895355, y: 11.645293, z: 29.326418}
-  m_BoxOffset: {x: -0.26378727, y: -4.9262795, z: -0.19761467}
+  m_BoxSize: {x: 27.000652, y: 14.718967, z: 29.326418}
+  m_BoxOffset: {x: -1.7054195, y: -5.512741, z: -0.19761467}
   m_NearClip: 0.3
   m_FarClip: 1000
   m_ShadowDistance: 100
@@ -19473,6 +19486,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc5ca5d7dffd3c24088dc12c05b48a44, type: 3}
+--- !u!114 &931474420388807192 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1636487405342066831, guid: dc5ca5d7dffd3c24088dc12c05b48a44,
+    type: 3}
+  m_PrefabInstance: {fileID: 1898473483817699991}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6491c5e42ff464ab0ef170d2d87635, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &996573686003828432 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1696786066216930375, guid: dc5ca5d7dffd3c24088dc12c05b48a44,

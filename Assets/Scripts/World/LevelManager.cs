@@ -4,6 +4,8 @@ using UnityEngine;
 using Eflatun.SceneReference;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using UnityEditor.Rendering;
+using System;
 
 namespace PortalGame.World {
 
@@ -23,18 +25,31 @@ namespace PortalGame.World {
 
         private int currentLevelIndex;
         private Level currentLevel;
-        private GameObject currentLoadingCorridor;
+        [SerializeField]
+        private GameObject previousLoadingCorridor;
+        [SerializeField]
+        private GameObject nextLoadingCorridor;
 
         private void Start() {
             scenesLoaded = Enumerable.Repeat(false, levelScenes.Count).ToList();
-            Load(0);
+            Load(0, null);
         }
 
-        public void Load(int index) {
+        public void LoadNextLevel(Action callback = null) {
+            Load(currentLevelIndex+1, callback);
+        }
+
+        public void Load(int index, Action callback) {
+            if(index >= levelScenes.Count) {
+                Debug.LogWarning("This scene does not exist!");
+                return;
+            }
+
             if (scenesLoaded[index]) {
                 Debug.LogWarning("This scene is already loaded!");
                 return;
             }
+
 
             // descarrega cena atual
             if (currentLevel != null) {
@@ -53,15 +68,23 @@ namespace PortalGame.World {
                 }
 
                 // deleta corredor antigo
-                if (currentLoadingCorridor != null) {
-                    Destroy(currentLoadingCorridor);
+                if (previousLoadingCorridor != null) {
+                    Destroy(previousLoadingCorridor);
                 }
 
+                previousLoadingCorridor = nextLoadingCorridor;
+                var inverse = Quaternion.AngleAxis(180, Vector3.up);
+                var finalRotation = currentLevel.EndDoorPosition.rotation * inverse;
                 // spawn loading corridor on the end door coordinate
-                currentLoadingCorridor = Instantiate(
+                nextLoadingCorridor = Instantiate(
                     original: loadingRoomPrefab, 
                     position: currentLevel.EndDoorPosition.position, 
-                    rotation: currentLevel.EndDoorPosition.rotation);
+                    rotation: finalRotation
+                );
+                var waitRoom = nextLoadingCorridor.GetComponent<WaitRoom>();
+                waitRoom.Manager = this;
+
+                callback?.Invoke();
             };
         }
     }

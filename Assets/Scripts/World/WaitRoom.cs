@@ -17,5 +17,20 @@ namespace PortalGame.World {
         /// </summary>
         [field: SerializeField]
         public Transform EndDoorPosition { get; private set; }
+
+        [SerializeField]
+        private Door endDoor;
+
+        public LevelManager Manager { get; set; }
+
+        public void LoadNextLevel(Collider _, bool isEntering) {
+            if (!isEntering) {
+                return;
+            }
+            Manager.LoadNextLevel(() => {
+                // destrava a porta do final do corredior
+                endDoor.IsLocked = false;
+            });
+        }
     }
 }

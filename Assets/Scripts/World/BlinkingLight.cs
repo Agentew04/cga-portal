@@ -6,7 +6,7 @@ namespace PortalGame.World {
     [RequireComponent(typeof(Light))]
     public class BlinkingLight : MonoBehaviour {
 
-        private Light light;
+        private new Light light;
 
         [Header("Configuracoes")]
         [SerializeField, Tooltip("De quantos em quantos segundos tentar atualizar status")]
