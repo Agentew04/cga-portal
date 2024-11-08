@@ -47,6 +47,9 @@ namespace PortalGame.World {
             if(player == null) {
                 player = FindObjectOfType<FirstPersonController>();
             }
+            if (player == null) {
+                return;
+            }
             float distance = Vector3.Distance(player.transform.position, transform.position);
             AutoOpenSide side = GetSide(player.transform);
             if (useProximity && distance <= openingDistance && !IsOpen && (side & autoOpenSide) != AutoOpenSide.None) {
