@@ -19411,6 +19411,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2116737756757295810}
     m_Modifications:
+    - target: {fileID: 1636487405342066831, guid: dc5ca5d7dffd3c24088dc12c05b48a44,
+        type: 3}
+      propertyPath: autoOpenSide
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1636487405342066831, guid: dc5ca5d7dffd3c24088dc12c05b48a44,
+        type: 3}
+      propertyPath: <IsLocked>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1696786066216930375, guid: dc5ca5d7dffd3c24088dc12c05b48a44,
         type: 3}
       propertyPath: m_LocalScale.x

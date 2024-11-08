@@ -21,12 +21,17 @@ namespace PortalGame.World {
         [SerializeField]
         private Door endDoor;
 
+        [field: SerializeField, Tooltip("Referencia a porta do nivel anterior")]
+        public Door StartDoor { get; set; }
+
         public LevelManager Manager { get; set; }
 
         public void LoadNextLevel(Collider _, bool isEntering) {
             if (!isEntering) {
                 return;
             }
+            StartDoor.Close();
+            StartDoor.IsLocked = true;
             Manager.LoadNextLevel(() => {
                 // destrava a porta do final do corredior
                 endDoor.IsLocked = false;

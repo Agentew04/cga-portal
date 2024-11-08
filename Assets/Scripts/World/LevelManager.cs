@@ -59,6 +59,11 @@ namespace PortalGame.World {
 
             var op = SceneManager.LoadSceneAsync(levelScenes[index].BuildIndex, LoadSceneMode.Additive);
             op.completed += (op) => {
+                scenesLoaded[index] = true;
+                if (index > 0) {
+                    scenesLoaded[index - 1] = false;
+                }
+
                 currentLevelIndex = index;
                 var levels = FindObjectsOfType<Level>();
                 currentLevel = System.Array.Find(levels, (x) => x.LevelIndex == index);
@@ -73,6 +78,10 @@ namespace PortalGame.World {
                 }
 
                 previousLoadingCorridor = nextLoadingCorridor;
+                var leveldiffpos = previousLoadingCorridor.GetComponent<WaitRoom>().EndDoorPosition.position - currentLevel.StartDoorPosition.position;
+               
+                currentLevel.transform.position += leveldiffpos;
+
                 var inverse = Quaternion.AngleAxis(180, Vector3.up);
                 var finalRotation = currentLevel.EndDoorPosition.rotation * inverse;
                 // spawn loading corridor on the end door coordinate
@@ -81,8 +90,9 @@ namespace PortalGame.World {
                     position: currentLevel.EndDoorPosition.position, 
                     rotation: finalRotation
                 );
-                var waitRoom = nextLoadingCorridor.GetComponent<WaitRoom>();
-                waitRoom.Manager = this;
+                var nextwaitroom = nextLoadingCorridor.GetComponent<WaitRoom>();
+                nextwaitroom.StartDoor = currentLevel.EndDoorPosition.GetComponent<Door>();
+                nextwaitroom.Manager = this;
 
                 callback?.Invoke();
             };
