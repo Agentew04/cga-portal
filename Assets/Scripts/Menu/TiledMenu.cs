@@ -42,6 +42,7 @@ namespace PortalGame.Menu {
         private bool isFrontRendering = true;
         private int targetFlippedTiles = 0;
         private int flippedTiles = 0;
+        private Vector4 tileBounds;
 
         private void Start() {
             CreateTiles();
@@ -90,12 +91,18 @@ namespace PortalGame.Menu {
             uiCamera.targetTexture = renderTexture1;
         }
 
-        public void Turn() {
+        public bool Turn(RectTransform rect = null) {
             if (flippedTiles < targetFlippedTiles) {
                 Debug.Log("Ja tem uma animacao em andamento");
-                return;
+                return false;
             }
-            targetFlippedTiles = tiles.Count * tiles[0].Count;
+            if(rect == null) {
+                targetFlippedTiles = tiles.Count * tiles[0].Count;
+                tileBounds = new Vector4(0, 0, 16 * resolution, 9 * resolution);
+            } else {
+                (tileBounds, targetFlippedTiles) = CalculateTargetTiles(rect);
+                Debug.Log($"Target tiles: {targetFlippedTiles}");
+            }
 
             // swap back e front buffer
             if (isFrontRendering) {
@@ -111,10 +118,16 @@ namespace PortalGame.Menu {
             float yAxisDelay = tileTurnTime / (9 * resolution);
             for (int i = 0; i < tiles.Count; i++) {
                 for (int j = 0; j < tiles[i].Count; j++) {
-                    float delay = i * yAxisDelay + j * xAxisDelay;
-                    StartCoroutine(Rotate(tiles[i][j], rotateAround, delay));
+                    if (i < tileBounds.x || i >= tileBounds.z || j < tileBounds.y || j >= tileBounds.w) {
+                        // flipa instantaneo
+                        tiles[i][j].transform.rotation = tiles[i][j].transform.rotation * rotateAround;
+                    } else {
+                        float delay = i * yAxisDelay + j * xAxisDelay;
+                        StartCoroutine(Rotate(tiles[i][j], rotateAround, delay));
+                    }
                 }
             }
+            return true;
         }
 
         private IEnumerator Rotate(GameObject obj, Quaternion rotation, float delay) {
@@ -129,13 +142,46 @@ namespace PortalGame.Menu {
             }
             obj.transform.rotation = endRotation;
             flippedTiles++;
-
             if (flippedTiles == targetFlippedTiles) {
                 // acabou a animacao
                 Debug.Log("Acabou a animacao");
                 flippedTiles = 0;
                 targetFlippedTiles = 0;
             }
+        }
+
+        private (Vector4 bounds, int total) CalculateTargetTiles(RectTransform transform) {
+            var screenSize = ui.renderingDisplaySize;
+            var rect = transform.rect;
+
+            // Define o número de tiles horizontal e verticalmente com base em resolution
+            int tilesX = 16 * resolution;
+            int tilesY = 9 * resolution;
+
+            // Calcula o tamanho de cada tile
+            var tileWidth = screenSize.x / tilesX;
+            var tileHeight = screenSize.y / tilesY;
+
+            // no espaco 0x0 -> 1920x1080
+            var screenSpaceRectBounds = transform.GetCanvasSpaceBounds(ui);
+
+            // Calcula o número de tiles que a rect ocupa
+            int minTileX = Mathf.FloorToInt(screenSpaceRectBounds.min.x / tileWidth);
+            int minTileY = Mathf.FloorToInt(screenSpaceRectBounds.min.y / tileHeight);
+            int maxTileX = Mathf.CeilToInt(screenSpaceRectBounds.max.x / tileWidth);
+            int maxTileY = Mathf.CeilToInt(screenSpaceRectBounds.max.y / tileHeight);
+
+            // Limita os valores para o intervalo [0, 16*resolution] e [0, 9*resolution]
+            minTileX = Mathf.Clamp(minTileX, 0, tilesX-1);
+            minTileY = Mathf.Clamp(minTileY, 0, tilesY-1);
+            maxTileX = Mathf.Clamp(maxTileX, 0, tilesX-1);
+            maxTileY = Mathf.Clamp(maxTileY, 0, tilesY-1);
+
+            // Calcula o total de tiles que a rect ocupa
+            int totalTiles = (maxTileX - minTileX + 1) * (maxTileY - minTileY + 1);
+
+
+            return (new Vector4(minTileX, minTileY, maxTileX, maxTileY), totalTiles);
         }
 
         private void OnDestroy() {

@@ -15,18 +15,19 @@ namespace PortalGame.Menu {
         [SerializeField]
         private Sprite spr2;
 
+        [SerializeField]
+        private Image title;
+
         private void Start() {
         }
 
         public void Turn() {
-            if(back1.sprite == spr1) {
-                back1.sprite = spr2;
-            } else {
-                back1.sprite = spr1;
-            }
-
+            Debug.Log("flip");
+            title.enabled = !title.enabled;
             var menu = FindObjectOfType<TiledMenu>();
-            menu.Turn();
+            if (!menu.Turn(title.rectTransform)) {
+                Debug.Log("n deu");
+            }
         }
     }
 }
