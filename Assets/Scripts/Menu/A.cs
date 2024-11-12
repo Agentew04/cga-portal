@@ -23,9 +23,9 @@ namespace PortalGame.Menu {
 
         public void Turn() {
             Debug.Log("flip");
-            title.enabled = !title.enabled;
             var menu = FindObjectOfType<TiledMenu>();
             if (!menu.Turn(title.rectTransform)) {
+                title.enabled = !title.enabled;
                 Debug.Log("n deu");
             }
         }
