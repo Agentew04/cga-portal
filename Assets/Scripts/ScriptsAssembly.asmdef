@@ -1,0 +1,19 @@
+{
+    "name": "ScriptsAssembly",
+    "rootNamespace": "PortalGame",
+    "references": [
+        "GUID:caca889fed6088d40b22c2d7e2909c31",
+        "GUID:15fc0a57446b3144c949da3e2b9737a9",
+        "GUID:8e92a55773435544ca311f6c18f7ac49",
+        "GUID:4680d6c2eeddf62479afd82f9c6d65d6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

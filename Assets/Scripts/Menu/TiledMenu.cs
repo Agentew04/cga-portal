@@ -93,7 +93,7 @@ namespace PortalGame.Menu {
 
         public bool Turn(RectTransform rect = null) {
             if (flippedTiles < targetFlippedTiles) {
-                Debug.Log("Ja tem uma animacao em andamento");
+                Debug.Log($"Ja tem uma animacao em andamento. Espero {targetFlippedTiles} flips, so tenho {flippedTiles}.");
                 return false;
             }
             if(rect == null) {
@@ -118,7 +118,7 @@ namespace PortalGame.Menu {
             float yAxisDelay = tileTurnTime / (9 * resolution);
             for (int i = 0; i < tiles.Count; i++) {
                 for (int j = 0; j < tiles[i].Count; j++) {
-                    if (i < tileBounds.x || i >= tileBounds.z || j < tileBounds.y || j >= tileBounds.w) {
+                    if (i < tileBounds.x || i > tileBounds.z || j < tileBounds.y || j > tileBounds.w) {
                         // flipa instantaneo
                         tiles[i][j].transform.rotation = tiles[i][j].transform.rotation * rotateAround;
                     } else {
@@ -163,13 +163,13 @@ namespace PortalGame.Menu {
             var tileHeight = screenSize.y / tilesY;
 
             // no espaco 0x0 -> 1920x1080
-            var screenSpaceRectBounds = transform.GetCanvasSpaceBounds(ui);
+            var (min, max) = transform.GetCanvasSpaceBounds(ui);
 
             // Calcula o número de tiles que a rect ocupa
-            int minTileX = Mathf.FloorToInt(screenSpaceRectBounds.min.x / tileWidth);
-            int minTileY = Mathf.FloorToInt(screenSpaceRectBounds.min.y / tileHeight);
-            int maxTileX = Mathf.CeilToInt(screenSpaceRectBounds.max.x / tileWidth);
-            int maxTileY = Mathf.CeilToInt(screenSpaceRectBounds.max.y / tileHeight);
+            int minTileX = Mathf.FloorToInt(min.x / tileWidth);
+            int minTileY = Mathf.FloorToInt(min.y / tileHeight);
+            int maxTileX = Mathf.CeilToInt(max.x / tileWidth);
+            int maxTileY = Mathf.CeilToInt(max.y / tileHeight);
 
             // Limita os valores para o intervalo [0, 16*resolution] e [0, 9*resolution]
             minTileX = Mathf.Clamp(minTileX, 0, tilesX-1);
