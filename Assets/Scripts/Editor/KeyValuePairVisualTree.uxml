@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="Root" style="flex-grow: 1;">
+        <uie:PropertyField name="KeyField" label="Key" tabindex="1" style="width: 100%;" />
+        <uie:PropertyField name="ValueField" label="Value" tabindex="2" style="width: 100%;" />
+    </ui:VisualElement>
+</ui:UXML>

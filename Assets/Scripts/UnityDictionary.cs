@@ -12,16 +12,26 @@ namespace PortalGame {
     /// <typeparam name="K">The type of the Key</typeparam>
     /// <typeparam name="V">The type of the value</typeparam>
     [Serializable]
-    public class UnityDictionary<K, V> : IEnumerable<UnityDictionary<K, V>.KeyValuePair>
-                                        where K : Enum {
+    public class UnityDictionary<K, V> : IEnumerable<UnityDictionary<K, V>.KeyValuePair> {
 
         [Serializable]
         public class KeyValuePair {
-            [field: SerializeField]
-            public K Key { get; set; }
 
-            [field: SerializeField]
-            public V Value { get; set; }
+            [SerializeField]
+            private K key;
+
+            public K Key {
+                get => key;
+                set => key = value;
+            }
+
+            [SerializeField]
+            private V value;
+
+            public V Value {
+                get => value;
+                set => this.value = value;
+            }
         }
 
         [SerializeField, Tooltip("Defines if this dictionary allows duplicate keys")]

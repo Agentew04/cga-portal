@@ -18,6 +18,12 @@ namespace PortalGame.Menu {
         [SerializeField]
         private Image title;
 
+        [SerializeField]
+        private List<UnityDictionary<string, Sprite>.KeyValuePair> sprite;
+
+        [SerializeField]
+        private UnityDictionary<string, Sprite> sprites;
+
         private void Start() {
         }
 

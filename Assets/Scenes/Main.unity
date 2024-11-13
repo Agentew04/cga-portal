@@ -404,6 +404,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1261705476}
+  - component: {fileID: 1261705477}
   m_Layer: 0
   m_Name: patrol
   m_TagString: Untagged
@@ -426,6 +427,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1261705477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261705475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e4782a0c0938c240bf3e6fec4444dc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  back1: {fileID: 0}
+  spr1: {fileID: 0}
+  spr2: {fileID: 0}
+  title: {fileID: 0}
+  sprite: []
+  sprites:
+    m_duplicatesAllowed: 1
+    m_Dictionary:
+    - key: 1
+      value: {fileID: 21300000, guid: be4ce60e2c9768c44b9b10b9c5258045, type: 3}
+    - key: 3
+      value: {fileID: 0}
+    - key: 10
+      value: {fileID: 21300000, guid: d4ff960e21154dc4e82fe2e045e9a39c, type: 3}
 --- !u!1 &1484364774
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,70 +483,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AudioSources:
+    m_duplicatesAllowed: 1
     m_Dictionary:
-    - <Key>k__BackingField: 1
-      <Value>k__BackingField: {fileID: 8300000, guid: 5a25bcfc5d3219547a4b0904528c97b2,
-        type: 3}
-    - <Key>k__BackingField: 2
-      <Value>k__BackingField: {fileID: 8300000, guid: d7cf21f4328c885488c8eabb5377ae56,
-        type: 3}
-    - <Key>k__BackingField: 3
-      <Value>k__BackingField: {fileID: 8300000, guid: cb4989b1b86e0bc45aee0126f64abbe2,
-        type: 3}
-    - <Key>k__BackingField: 3
-      <Value>k__BackingField: {fileID: 8300000, guid: a4bd3872286965b4a8cafc6ed75920c1,
-        type: 3}
-    - <Key>k__BackingField: 3
-      <Value>k__BackingField: {fileID: 8300000, guid: 9ad520a25ea030d4d8d3016006cc2f77,
-        type: 3}
-    - <Key>k__BackingField: 3
-      <Value>k__BackingField: {fileID: 8300000, guid: 1d8d4cd26e86c464fb00dfc198cff44d,
-        type: 3}
-    - <Key>k__BackingField: 3
-      <Value>k__BackingField: {fileID: 8300000, guid: ef595b79aa042af4b862ddb494758570,
-        type: 3}
-    - <Key>k__BackingField: 5
-      <Value>k__BackingField: {fileID: 8300000, guid: 9ee6453347bd34f43a065ab837373d89,
-        type: 3}
-    - <Key>k__BackingField: 5
-      <Value>k__BackingField: {fileID: 8300000, guid: 4132c6ac752b88d46b0428aaba0c18e0,
-        type: 3}
-    - <Key>k__BackingField: 5
-      <Value>k__BackingField: {fileID: 8300000, guid: b2b7757013594304dab0b0742f010ef6,
-        type: 3}
-    - <Key>k__BackingField: 5
-      <Value>k__BackingField: {fileID: 8300000, guid: 22fbf203e87c7624a82fafe2bfa90618,
-        type: 3}
-    - <Key>k__BackingField: 6
-      <Value>k__BackingField: {fileID: 8300000, guid: 9ee6453347bd34f43a065ab837373d89,
-        type: 3}
-    - <Key>k__BackingField: 6
-      <Value>k__BackingField: {fileID: 8300000, guid: 4132c6ac752b88d46b0428aaba0c18e0,
-        type: 3}
-    - <Key>k__BackingField: 6
-      <Value>k__BackingField: {fileID: 8300000, guid: b2b7757013594304dab0b0742f010ef6,
-        type: 3}
-    - <Key>k__BackingField: 6
-      <Value>k__BackingField: {fileID: 8300000, guid: 41c0067aaf374b545bb7c8e2fa6bd6b8,
-        type: 3}
-    - <Key>k__BackingField: 6
-      <Value>k__BackingField: {fileID: 8300000, guid: 26dfdf95eb5229f4c9d4e35a24cde0c9,
-        type: 3}
-    - <Key>k__BackingField: 4
-      <Value>k__BackingField: {fileID: 8300000, guid: 2a1325a86a2d04844abfdb50d33e7c25,
-        type: 3}
-    - <Key>k__BackingField: 4
-      <Value>k__BackingField: {fileID: 8300000, guid: ad911d8285329a44295b1c71511f1006,
-        type: 3}
-    - <Key>k__BackingField: 4
-      <Value>k__BackingField: {fileID: 8300000, guid: 310b1ebdf262aad4ea31aa46efe39a18,
-        type: 3}
-    - <Key>k__BackingField: 7
-      <Value>k__BackingField: {fileID: 8300000, guid: 842bd2dbafc68f4408717bbf5f10945b,
-        type: 3}
-    - <Key>k__BackingField: 8
-      <Value>k__BackingField: {fileID: 8300000, guid: df6803f1f94646442a50be494258872d,
-        type: 3}
+    - key: 1
+      value: {fileID: 8300000, guid: 5a25bcfc5d3219547a4b0904528c97b2, type: 3}
+    - key: 2
+      value: {fileID: 8300000, guid: d7cf21f4328c885488c8eabb5377ae56, type: 3}
+    - key: 3
+      value: {fileID: 8300000, guid: cb4989b1b86e0bc45aee0126f64abbe2, type: 3}
+    - key: 3
+      value: {fileID: 8300000, guid: a4bd3872286965b4a8cafc6ed75920c1, type: 3}
+    - key: 3
+      value: {fileID: 8300000, guid: 9ad520a25ea030d4d8d3016006cc2f77, type: 3}
+    - key: 3
+      value: {fileID: 8300000, guid: 1d8d4cd26e86c464fb00dfc198cff44d, type: 3}
+    - key: 3
+      value: {fileID: 8300000, guid: ef595b79aa042af4b862ddb494758570, type: 3}
+    - key: 4
+      value: {fileID: 8300000, guid: 2a1325a86a2d04844abfdb50d33e7c25, type: 3}
+    - key: 4
+      value: {fileID: 8300000, guid: ad911d8285329a44295b1c71511f1006, type: 3}
+    - key: 4
+      value: {fileID: 8300000, guid: 310b1ebdf262aad4ea31aa46efe39a18, type: 3}
+    - key: 5
+      value: {fileID: 8300000, guid: 9ee6453347bd34f43a065ab837373d89, type: 3}
+    - key: 5
+      value: {fileID: 8300000, guid: 4132c6ac752b88d46b0428aaba0c18e0, type: 3}
+    - key: 5
+      value: {fileID: 8300000, guid: b2b7757013594304dab0b0742f010ef6, type: 3}
+    - key: 5
+      value: {fileID: 8300000, guid: 22fbf203e87c7624a82fafe2bfa90618, type: 3}
+    - key: 6
+      value: {fileID: 8300000, guid: 9ee6453347bd34f43a065ab837373d89, type: 3}
+    - key: 6
+      value: {fileID: 8300000, guid: 4132c6ac752b88d46b0428aaba0c18e0, type: 3}
+    - key: 6
+      value: {fileID: 8300000, guid: b2b7757013594304dab0b0742f010ef6, type: 3}
+    - key: 6
+      value: {fileID: 8300000, guid: 41c0067aaf374b545bb7c8e2fa6bd6b8, type: 3}
+    - key: 6
+      value: {fileID: 8300000, guid: 26dfdf95eb5229f4c9d4e35a24cde0c9, type: 3}
+    - key: 7
+      value: {fileID: 8300000, guid: 842bd2dbafc68f4408717bbf5f10945b, type: 3}
+    - key: 8
+      value: {fileID: 8300000, guid: df6803f1f94646442a50be494258872d, type: 3}
 --- !u!4 &1484364776
 Transform:
   m_ObjectHideFlags: 0

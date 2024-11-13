@@ -35,7 +35,7 @@ namespace PortalGame.Player {
         private void Update() {
 
             if (Input.GetKeyDown(KeyCode.F1)) {
-                fpsController.cameraCanMove.Toggle();
+                //fpsController.cameraCanMove.Toggle();
             }
 
             if(Input.GetMouseButtonDown(0)){
