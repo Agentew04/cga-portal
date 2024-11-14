@@ -1,3 +1,4 @@
+using PortalGame.Player;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace PortalGame.World {
         [SerializeField]
         private AudioSource audioSource;
 
-        private FirstPersonController player;
+        private Player.PlayerMovement player;
 
         public bool IsOpen { get; private set; } = false;
 
@@ -40,15 +41,16 @@ namespace PortalGame.World {
         public Transform BackSide { get; set; }
 
         private void Start() {
-            player = FindObjectOfType<FirstPersonController>();
+            player = FindObjectOfType<Player.PlayerMovement>();
         }
 
         private void Update() {
             if(player == null) {
-                player = FindObjectOfType<FirstPersonController>();
-            }
-            if (player == null) {
-                return;
+                player = FindObjectOfType<Player.PlayerMovement>();
+                if (player == null) {
+                    Debug.LogError("Player not found. Door cannot open by proximity");
+                    return;
+                }
             }
             float distance = Vector3.Distance(player.transform.position, transform.position);
             AutoOpenSide side = GetSide(player.transform);

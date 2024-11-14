@@ -1,0 +1,25 @@
+.sideBar {
+    background-color: rgb(46, 46, 46);
+    width: 30%;
+    transition-duration: 0.5s;
+}
+
+.pauseBackground {
+    background-color: rgba(0, 0, 0, 0.68);
+    width: 100%;
+    transition-duration: 0.5s;
+}
+
+.sideBar-hidden {
+    transition-duration: 0.5s;
+    left: auto;
+    margin-left: -30%;
+    width: 30%;
+    background-color: rgba(46, 46, 46, 0);
+}
+
+.pauseBackground-hidden {
+    transition-duration: 0.5s;
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+}

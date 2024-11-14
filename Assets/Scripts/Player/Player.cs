@@ -17,6 +17,9 @@ namespace PortalGame.Player {
         private Gun gun;
 
         [SerializeField]
+        private PauseMenu pauseMenu;
+
+        [SerializeField]
         private GameObject portalPrefab;
 
         [field: SerializeField]
@@ -25,17 +28,21 @@ namespace PortalGame.Player {
         [field: SerializeField]
         public Portal BluePortal { get; set; } = null;
 
-        private FirstPersonController fpsController;
+        private PlayerMovement playerMovement;
+        private MouseLook mouseLook;
 
         private void Start() {
             RenderPipelineManager.beginCameraRendering += RenderPortals;
-            fpsController = FindObjectOfType<FirstPersonController>();
+            playerMovement = FindObjectOfType<PlayerMovement>();
+            mouseLook = FindObjectOfType<MouseLook>();
         }
 
         private void Update() {
 
             if (Input.GetKeyDown(KeyCode.F1)) {
-                //fpsController.cameraCanMove.Toggle();
+                playerMovement.BlockMovement = !playerMovement.BlockMovement;
+                mouseLook.BlockMovement = !mouseLook.BlockMovement;
+                pauseMenu.TogglePause();
             }
 
             if(Input.GetMouseButtonDown(0)){
@@ -63,6 +70,10 @@ namespace PortalGame.Player {
         }
 
         private void Click(PortalType type) {
+            if(mouseLook.BlockMovement || playerMovement.BlockMovement) {
+                return;
+            }
+
             Ray ray = new(transform.position, transform.forward);
             bool isHit = Physics.Raycast(ray, out RaycastHit hit, 1000.0f);
 

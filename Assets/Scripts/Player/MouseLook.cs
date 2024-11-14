@@ -13,6 +13,15 @@ namespace PortalGame
 
         private float xRotation = 0f;
 
+        [Space]
+        [SerializeField]
+        private bool blockMovement = false;
+
+        public bool BlockMovement {
+            get => blockMovement;
+            set => blockMovement = value;
+        }
+
 #pragma warning disable S2325
         private void Start() {
             Cursor.lockState = CursorLockMode.Locked;
@@ -20,6 +29,10 @@ namespace PortalGame
 #pragma warning restore S2325
 
         private void Update() {
+            if (blockMovement) {
+                return;
+            }
+
             float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
             float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 

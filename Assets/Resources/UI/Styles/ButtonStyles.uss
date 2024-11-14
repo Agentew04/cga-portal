@@ -1,0 +1,32 @@
+.menubutton {
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-left-color: rgb(0, 108, 255);
+    border-right-color: rgb(0, 108, 255);
+    border-top-color: rgb(0, 108, 255);
+    border-bottom-color: rgb(0, 108, 255);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    font-size: 250%;
+    -unity-font-definition: resource('UI/Fonts/UniversRegular SDF');
+    -unity-font: resource('UI/Fonts/UniversRegular');
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 101, 231);
+    -unity-text-align: middle-center;
+    text-overflow: clip;
+    align-self: center;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    transition-duration: 0.5s;
+}
+
+.menubutton:hover {
+    transition-duration: 0.5s;
+    scale: 1.1 1.1;
+}

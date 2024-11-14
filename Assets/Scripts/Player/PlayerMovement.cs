@@ -35,7 +35,20 @@ namespace PortalGame.Player {
         [SerializeField, Tooltip("Altura enquanto agacha")]
         private float crouchHeight = 1f;
 
+        [Space]
+        [SerializeField]
+        private bool blockMovement = false;
+
+        public bool BlockMovement {
+            get => blockMovement;
+            set => blockMovement = value;
+        }
+
         private void Update() {
+            if (blockMovement) {
+                return;
+            }
+
             // Verifica se está no chão
             isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
