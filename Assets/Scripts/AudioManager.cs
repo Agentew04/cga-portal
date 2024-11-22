@@ -20,6 +20,7 @@ namespace PortalGame {
         DoorOpen,
         DoorClose,
         GunFizzle,
+        BoxHit
     }
 
     /// <summary>
