@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Resources/UI/Styles/Panels.uss?fileID=7433441132597879392&amp;guid=5406365acfbce4a43b455e05feffe79c&amp;type=3#Panels" />
     <Style src="project://database/Assets/Resources/UI/Styles/ButtonStyles.uss?fileID=7433441132597879392&amp;guid=ef04c68413f599741adea1e8edc34126&amp;type=3#ButtonStyles" />
-    <ui:VisualElement name="Root" style="flex-grow: 1; flex-direction: row; align-self: flex-end; justify-content: space-between; align-items: stretch; display: flex;">
+    <ui:VisualElement name="Root" style="flex-grow: 1; flex-direction: row; align-self: auto; justify-content: space-between; align-items: stretch; display: flex;">
         <ui:VisualElement name="SideBar" class="sideBar sideBar-hidden" style="justify-content: center;">
             <ui:Label tabindex="-1" text="Aperture Labs" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title" style="color: rgb(255, 255, 255); align-self: center; font-size: 75%; -unity-font: resource(&apos;UI/Fonts/UniversRegular&apos;); -unity-font-definition: resource(&apos;UI/Fonts/UniversRegular SDF&apos;); margin-bottom: 129px;" />
             <ui:Button text="Main Menu" parse-escape-sequences="true" display-tooltip-when-elided="true" name="MainMenuButton" class="menubutton" />

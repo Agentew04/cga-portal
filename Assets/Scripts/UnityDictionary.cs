@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -45,13 +46,17 @@ namespace PortalGame {
             set => m_duplicatesAllowed = value;
         }
 
-        public ICollection<K> Keys => throw new NotImplementedException();
+        public ICollection<K> Keys => m_Dictionary
+            .Select(x => x.Key)
+            .ToList();
 
-        public ICollection<V> Values => throw new NotImplementedException();
+        public ICollection<V> Values => m_Dictionary
+            .Select(x => x.Value)
+            .ToList();
 
-        public int Count => throw new NotImplementedException();
+        public int Count => m_Dictionary.Count;
 
-        public bool IsReadOnly => throw new NotImplementedException();
+        public bool IsReadOnly => false;
 
         [SerializeField]
         private List<KeyValuePair> m_Dictionary = new();

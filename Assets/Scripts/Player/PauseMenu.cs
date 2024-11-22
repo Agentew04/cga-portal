@@ -56,15 +56,11 @@ namespace PortalGame
             if (isPaused) {
                 Debug.Log("Pause");
                 background.RemoveFromClassList("pauseBackground-hidden");
-                //background.AddToClassList("pauseBackground");
                 sidebar.RemoveFromClassList("sideBar-hidden");
-                //sidebar.AddToClassList("sideBar");
             } else {
                 Debug.Log("Unpause");
                 background.AddToClassList("pauseBackground-hidden");
-                //background.RemoveFromClassList("pauseBackground");
                 sidebar.AddToClassList("sideBar-hidden");
-                //sidebar.RemoveFromClassList("sideBar");
             }
 
         }

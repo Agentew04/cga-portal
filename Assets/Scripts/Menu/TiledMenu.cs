@@ -152,7 +152,6 @@ namespace PortalGame.Menu {
 
         private (Vector4 bounds, int total) CalculateTargetTiles(RectTransform transform) {
             var screenSize = ui.renderingDisplaySize;
-            var rect = transform.rect;
 
             // Define o número de tiles horizontal e verticalmente com base em resolution
             int tilesX = 16 * resolution;

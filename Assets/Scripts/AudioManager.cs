@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace PortalGame {
 
+    /// <summary>
+    /// Enumerador que define os tipos de audio disponiveis
+    /// no jogo. Usado na funcao <see cref="AudioManager.GetAudio(AudioType)"/>.
+    /// </summary>
     public enum AudioType {
         None,
         GunShootBlue,
@@ -14,8 +18,14 @@ namespace PortalGame {
         PortalBlueOpen,
         PortalOrangeOpen,
         DoorOpen,
-        DoorClose
+        DoorClose,
+        GunFizzle,
     }
+
+    /// <summary>
+    /// Classe que gerencia os audios do jogo.
+    /// Acessar atraves de <see cref="Instance"/>.
+    /// </summary>
 
     public class AudioManager : MonoBehaviour {
 

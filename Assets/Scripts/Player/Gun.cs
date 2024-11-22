@@ -137,5 +137,18 @@ namespace PortalGame.Player {
             projectileParticleRenderer.material.color = color;
             UpdateLightEmission(color);
         }
+
+        /// <summary>
+        /// Toca animacao e som de limpeza dos portais
+        /// </summary>
+        public void Fizzle() {
+            animator.SetTrigger("Fizzle");
+
+            if (audioSource.isPlaying) {
+                audioSource.Stop();
+            }
+            audioSource.clip = AudioManager.Instance.GetAudio(AudioType.GunFizzle);
+            audioSource.Play();
+        }
     }
 }

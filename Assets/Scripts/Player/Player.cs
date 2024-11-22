@@ -30,18 +30,25 @@ namespace PortalGame.Player {
 
         private PlayerMovement playerMovement;
         private MouseLook mouseLook;
+        private FirstPersonController fpsController;
 
         private void Start() {
             RenderPipelineManager.beginCameraRendering += RenderPortals;
-            playerMovement = FindObjectOfType<PlayerMovement>();
-            mouseLook = FindObjectOfType<MouseLook>();
+            playerMovement = FindAnyObjectByType<PlayerMovement>();
+            mouseLook = FindAnyObjectByType<MouseLook>();
+            fpsController = FindAnyObjectByType<FirstPersonController>();
         }
 
         private void Update() {
 
             if (Input.GetKeyDown(KeyCode.F1)) {
-                playerMovement.BlockMovement = !playerMovement.BlockMovement;
-                mouseLook.BlockMovement = !mouseLook.BlockMovement;
+                if(playerMovement != null && mouseLook != null) {
+                    playerMovement.BlockMovement = !playerMovement.BlockMovement;
+                    mouseLook.BlockMovement = !mouseLook.BlockMovement;
+                }else if(fpsController != null) {
+                    fpsController.cameraCanMove = !fpsController.cameraCanMove;
+                    fpsController.playerCanMove = !fpsController.playerCanMove;
+                }
                 pauseMenu.TogglePause();
             }
 
@@ -70,7 +77,9 @@ namespace PortalGame.Player {
         }
 
         private void Click(PortalType type) {
-            if(mouseLook.BlockMovement || playerMovement.BlockMovement) {
+            if((mouseLook != null && playerMovement != null &&
+                (mouseLook.BlockMovement || playerMovement.BlockMovement))
+                || (fpsController != null && (!fpsController.cameraCanMove || !fpsController.playerCanMove))) {
                 return;
             }
 
@@ -126,7 +135,7 @@ namespace PortalGame.Player {
             });
 
             // avisa a torreta
-            Turret[] turrets = FindObjectsOfType<Turret>();
+            Turret[] turrets = FindObjectsByType<Turret>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
             foreach(Turret turret in turrets) {
                 turret.GiveHint(hit.point);
             }
@@ -139,8 +148,29 @@ namespace PortalGame.Player {
             return portal.GetComponent<Portal>();
         }
 
+        public void ClearPortals() {
+            Debug.Log("Limpando portais do usuario");
+            if (BluePortal != null) {
+                Destroy(BluePortal.gameObject);
+                BluePortal = null;
+            }
+            if (RedPortal != null) {
+                Destroy(RedPortal.gameObject);
+                RedPortal = null;
+            }
+
+            // sinaliza pra arma fazer animacao de tururu
+            gun.Fizzle();
+        }
+
         private void OnDisable() {
             RenderPipelineManager.beginCameraRendering -= RenderPortals;
+            if(BluePortal != null) {
+                Destroy(BluePortal.gameObject);
+            }
+            if(RedPortal != null) {
+                Destroy(RedPortal.gameObject);
+            }
         }
     }
 }
