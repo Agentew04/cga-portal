@@ -184,6 +184,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8363600156956373479, guid: dfaca2243ffc230428cc965f1d41c78c,
+        type: 3}
+      propertyPath: pauseMenu
+      value: 
+      objectReference: {fileID: 1379975475}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -602,7 +607,7 @@ PrefabInstance:
     - target: {fileID: 5893482224899450575, guid: e4c3b0c3ced464a42841d2c44cf74bc6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.354
+      value: 0.541
       objectReference: {fileID: 0}
     - target: {fileID: 5893482224899450575, guid: e4c3b0c3ced464a42841d2c44cf74bc6,
         type: 3}

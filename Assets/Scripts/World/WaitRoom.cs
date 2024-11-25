@@ -26,10 +26,16 @@ namespace PortalGame.World {
 
         public LevelManager Manager { get; set; }
 
-        public void LoadNextLevel(Collider _, bool isEntering) {
+        public void LoadNextLevel(Collider other, bool isEntering) {
             if (!isEntering) {
                 return;
             }
+
+            // check layer
+            if (other.gameObject.layer != LayerMask.NameToLayer("Player")) {
+                return;
+            }
+
             StartDoor.Close();
             StartDoor.IsLocked = true;
             Manager.LoadNextLevel(() => {
