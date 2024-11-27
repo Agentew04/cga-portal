@@ -54,11 +54,9 @@ namespace PortalGame
             }
 
             if (isPaused) {
-                Debug.Log("Pause");
                 background.RemoveFromClassList("pauseBackground-hidden");
                 sidebar.RemoveFromClassList("sideBar-hidden");
             } else {
-                Debug.Log("Unpause");
                 background.AddToClassList("pauseBackground-hidden");
                 sidebar.AddToClassList("sideBar-hidden");
             }

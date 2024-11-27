@@ -22,6 +22,13 @@ namespace PortalGame.Player {
         [SerializeField]
         private GameObject portalPrefab;
 
+        [SerializeField, Tooltip("Usado para mutar o audio do jogador")]
+        private AudioListener audioListener;
+
+        [SerializeField, Tooltip("Usado para pegar uma textura da camera")]
+        private new Camera camera;
+        public Camera Camera => camera;
+
         [field: SerializeField]
         public Portal RedPortal { get; set; } = null;
 
@@ -31,6 +38,9 @@ namespace PortalGame.Player {
         private PlayerMovement playerMovement;
         private MouseLook mouseLook;
         private FirstPersonController fpsController;
+
+        private bool isLocked = false;
+        private bool isMuted = false;
 
         private void Start() {
             RenderPipelineManager.beginCameraRendering += RenderPortals;
@@ -42,13 +52,7 @@ namespace PortalGame.Player {
         private void Update() {
 
             if (Input.GetKeyDown(KeyCode.F1)) {
-                if(playerMovement != null && mouseLook != null) {
-                    playerMovement.BlockMovement = !playerMovement.BlockMovement;
-                    mouseLook.BlockMovement = !mouseLook.BlockMovement;
-                }else if(fpsController != null) {
-                    fpsController.cameraCanMove = !fpsController.cameraCanMove;
-                    fpsController.playerCanMove = !fpsController.playerCanMove;
-                }
+                SetLock(!isLocked);
                 pauseMenu.TogglePause();
             }
 
@@ -161,6 +165,27 @@ namespace PortalGame.Player {
 
             // sinaliza pra arma fazer animacao de tururu
             gun.Fizzle();
+        }
+
+        /// <summary>
+        /// Define se tava o controle do jogador ou nao.
+        /// </summary>
+        /// <param name="lockState"></param>
+        public void SetLock(bool lockState) {
+            isLocked = lockState;
+
+            if (playerMovement != null && mouseLook != null) {
+                playerMovement.BlockMovement = lockState;
+                mouseLook.BlockMovement = lockState;
+            } else if (fpsController != null) {
+                fpsController.cameraCanMove = !lockState;
+                fpsController.playerCanMove = !lockState;
+            }
+        }
+
+        public void SetMute(bool muteState) {
+            isMuted = muteState;
+            audioListener.enabled = !muteState;
         }
 
         private void OnDisable() {

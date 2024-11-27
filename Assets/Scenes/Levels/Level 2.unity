@@ -6169,7 +6169,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 0
@@ -15374,6 +15374,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8281432084760665680}
     m_Modifications:
+    - target: {fileID: 2669975645946183936, guid: 8cf11c520a166414f843db6e8533bdf0,
+        type: 3}
+      propertyPath: m_Range
+      value: 5.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2669975645946183936, guid: 8cf11c520a166414f843db6e8533bdf0,
+        type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4832835836832357304, guid: 8cf11c520a166414f843db6e8533bdf0,
         type: 3}
       propertyPath: m_Name

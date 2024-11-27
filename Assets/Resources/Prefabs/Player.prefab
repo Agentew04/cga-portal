@@ -64,6 +64,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -354,6 +357,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -608,8 +614,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gun: {fileID: 7541771813771760519}
+  pauseMenu: {fileID: 0}
   portalPrefab: {fileID: 389506935872271867, guid: b17346557923dd74596b6e8fc8eb2c84,
     type: 3}
+  audioListener: {fileID: 88822169313484757}
+  camera: {fileID: 4611494571489093029}
   <RedPortal>k__BackingField: {fileID: 0}
   <BluePortal>k__BackingField: {fileID: 0}
 --- !u!114 &1756321723593609116

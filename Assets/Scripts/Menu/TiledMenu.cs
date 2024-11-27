@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ namespace PortalGame.Menu {
 
     /// <summary>
     /// Script que cria e gerencia o efeito
-    /// de tiles na tela de menu
+    /// de tiles na tela de menu.
     /// </summary>
     public class TiledMenu : MonoBehaviour {
         [Header("Configuracoes")]
@@ -25,24 +26,29 @@ namespace PortalGame.Menu {
 
         [SerializeField]
         private RenderTexture renderTexture1;
+        public RenderTexture RenderTexture1 => renderTexture1;
 
         [SerializeField]
         private RenderTexture renderTexture2;
+        public RenderTexture RenderTexture2 => renderTexture2;
 
         [SerializeField]
         private Camera uiCamera;
+        public Camera UICamera => uiCamera;
 
         [SerializeField]
         private Camera actualCamera;
+        public Camera ActualCamera => actualCamera;
 
         [SerializeField]
         private Canvas ui;
 
         private readonly List<List<GameObject>> tiles = new();
-        private bool isFrontRendering = true;
+        public bool IsFrontRendering { get; set; } = true;
         private int targetFlippedTiles = 0;
         private int flippedTiles = 0;
         private Vector4 tileBounds;
+        private Action callback;
 
         private void Start() {
             CreateTiles();
@@ -51,6 +57,9 @@ namespace PortalGame.Menu {
         }
 
         private void CreateTiles() {
+            // get layer tiles
+            int layer = LayerMask.NameToLayer("TransparentFX");
+
             // esperamos 16:9 x resolucao
             float width = 16.0f * resolution;
             float height = 9.0f * resolution;
@@ -67,6 +76,7 @@ namespace PortalGame.Menu {
                         localPosition: new Vector3(xCoord + 0.5f, yCoord + 0.5f, cameraDistance), 
                         localRotation: Quaternion.identity);
                     tile.transform.localScale = Vector3.one;
+                    tile.layer = layer;// set layer
                     line.Add(tile);
                     var mr = tile.GetComponent<MeshRenderer>();
                     mr.material = menuMaterial;
@@ -91,7 +101,7 @@ namespace PortalGame.Menu {
             uiCamera.targetTexture = renderTexture1;
         }
 
-        public bool Turn(RectTransform rect = null) {
+        public bool Turn(RectTransform rect = null, Action callback = null) {
             if (flippedTiles < targetFlippedTiles) {
                 Debug.Log($"Ja tem uma animacao em andamento. Espero {targetFlippedTiles} flips, so tenho {flippedTiles}.");
                 return false;
@@ -103,14 +113,24 @@ namespace PortalGame.Menu {
                 (tileBounds, targetFlippedTiles) = CalculateTargetTiles(rect);
                 Debug.Log($"Target tiles: {targetFlippedTiles}");
             }
+            
+            if (tiles.Count == 0) {
+                // nao iniciou ainda os tiles, ignorar update
+                targetFlippedTiles = 0;
+                flippedTiles = 0;
+                Debug.Log("Tentei virar antes de ter tiles");
+                return true; // ou true?
+            }
 
             // swap back e front buffer
-            if (isFrontRendering) {
-                uiCamera.targetTexture = renderTexture1;
-            } else {
+            if (IsFrontRendering) {
                 uiCamera.targetTexture = renderTexture2;
+            } else {
+                uiCamera.targetTexture = renderTexture1;
             }
-            isFrontRendering.Toggle();
+            IsFrontRendering = !IsFrontRendering;
+
+            this.callback = callback;
 
             // anima tiles
             Quaternion rotateAround = Quaternion.Euler(0, 180, 0);
@@ -145,6 +165,7 @@ namespace PortalGame.Menu {
             if (flippedTiles == targetFlippedTiles) {
                 // acabou a animacao
                 Debug.Log("Acabou a animacao");
+                callback?.Invoke();
                 flippedTiles = 0;
                 targetFlippedTiles = 0;
             }
@@ -181,6 +202,14 @@ namespace PortalGame.Menu {
 
 
             return (new Vector4(minTileX, minTileY, maxTileX, maxTileY), totalTiles);
+        }
+
+        public void SetTilesVisibility(bool visibility) {
+            foreach (var line in tiles) {
+                foreach (var tile in line) {
+                    tile.SetActive(visibility);
+                }
+            }
         }
 
         private void OnDestroy() {

@@ -24,5 +24,15 @@ namespace PortalGame {
             }
             return (corners[0], corners[2]);
         }
+
+        public static T FindFirstOf<T>(this IEnumerable<GameObject> gos) where T:Component {
+            foreach (GameObject go in gos) {
+                T comp = go.GetComponentInChildren<T>();
+                if (comp != null) {
+                    return comp;
+                }
+            }
+            return null;
+        }
     }
 }

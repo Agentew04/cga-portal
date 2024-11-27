@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Eflatun.SceneReference;
 using UnityEngine.SceneManagement;
 using System.Linq;
-using UnityEditor.Rendering;
 using System;
 
 namespace PortalGame.World {
@@ -15,11 +13,15 @@ namespace PortalGame.World {
     /// </summary>
     public class LevelManager : MonoBehaviour {
 
+        [Header("Configuracoes")]
+        [SerializeField, Tooltip("Define se o objeto carrega os niveis direto ou espera uma ativacao")]
+        private bool loadOnStart = true;
         [SerializeField, Tooltip("Lista das cenas dos niveis")]
         private List<SceneReference> levelScenes;
 
         private List<bool> scenesLoaded = new();
 
+        [Header("Referencias")]
         [SerializeField]
         private GameObject loadingRoomPrefab;
 
@@ -30,13 +32,35 @@ namespace PortalGame.World {
         [SerializeField]
         private GameObject nextLoadingCorridor;
 
+        [SerializeField]
+        private Player.Player player;
+        public Player.Player Player => player;
+
         private void Start() {
             scenesLoaded = Enumerable.Repeat(false, levelScenes.Count).ToList();
-            Load(0, null);
+            if (loadOnStart) {
+                Load(0, null);
+            }
         }
 
         public void LoadNextLevel(Action callback = null) {
             Load(currentLevelIndex+1, callback);
+        }
+
+        /// <summary>
+        /// Desbloqueia controle do jogador e ativa o audio dele.
+        /// </summary>
+        public void UnlockGameplay() {
+            player.SetLock(false);
+            player.SetMute(false);
+        }
+
+        /// <summary>
+        /// Trava o controle do player e desliga o <see cref="AudioListener"/> dele.
+        /// </summary>
+        public void LockGameplay() {
+            player.SetLock(true);
+            player.SetMute(true);
         }
 
         public void Load(int index, Action callback) {
@@ -45,6 +69,10 @@ namespace PortalGame.World {
                 return;
             }
 
+            if(scenesLoaded.Count <= index) {
+                // completar a lista
+                scenesLoaded.AddRange(Enumerable.Repeat(false, index - scenesLoaded.Count + 1));
+            }
             if (scenesLoaded[index]) {
                 Debug.LogWarning("This scene is already loaded!");
                 return;
@@ -65,8 +93,8 @@ namespace PortalGame.World {
                 }
 
                 currentLevelIndex = index;
-                var levels = FindObjectsOfType<Level>();
-                currentLevel = System.Array.Find(levels, (x) => x.LevelIndex == index);
+                var levels = FindObjectsByType<Level>(FindObjectsSortMode.None);
+                currentLevel = Array.Find(levels, (x) => x.LevelIndex == index);
                 if(currentLevel == null) {
                     Debug.LogError("Level not found");
                     return;
