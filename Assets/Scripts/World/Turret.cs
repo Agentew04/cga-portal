@@ -56,6 +56,7 @@ namespace PortalGame.World {
 
         [SerializeField]
         private Vector3 currentHintPosition;
+        private bool hasHint = false;
 
         [Header("Visual e Referencias")]
         [SerializeField]
@@ -108,6 +109,11 @@ namespace PortalGame.World {
                 Gizmos.DrawWireSphere(transform.position, attackDistance);
             }
 
+            if (hasHint) {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(currentHintPosition, 0.5f);
+            }
+
         }
 
         /// <summary>
@@ -122,7 +128,8 @@ namespace PortalGame.World {
                 return;
             }
             navMeshAgent.CalculatePath(hintPosition, navMeshAgent.path);
-            this.currentHintPosition = hintPosition;
+            currentHintPosition = hintPosition;
+            hasHint = true;
             //animator.SetTrigger("Deploy");
         }
 
@@ -169,7 +176,9 @@ namespace PortalGame.World {
             SeeForward();
             // va para a dica
 
-            if (canPatrol) {
+            if (hasHint) {
+                // persegue a dica
+            }else if (canPatrol) {
                 Patrol();
             }
         }
@@ -191,7 +200,7 @@ namespace PortalGame.World {
                 Debug.Log("Definindo nova posicao de patrulha");
                 float alpha = Random.Range(0, 360);
                 float radius = Random.Range(0, patrolRadius);
-                currentPatrolPosition = new(Mathf.Cos(alpha) * radius, patrolCenter.position.y, Mathf.Sin(alpha) * radius);
+                currentPatrolPosition = patrolCenter.position + new Vector3(Mathf.Cos(alpha) * radius, 0, Mathf.Sin(alpha) * radius);
                 navMeshAgent.SetDestination(currentPatrolPosition);
             }
         }
