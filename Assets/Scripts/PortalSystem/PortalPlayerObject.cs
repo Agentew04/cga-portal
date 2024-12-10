@@ -55,7 +55,20 @@ public class PortalPlayerObject : PortalTraveller
 
     private void AvoidClipping(Vector3 scale)
     {
-        LeanTween.scale(gameObject, scale, 0.5f);
+        //LeanTween.scale(gameObject, scale, 0.5f)
+        StartCoroutine(Scale(gameObject, scale, 0.5f));
+    }
+
+    private IEnumerator Scale(GameObject go, Vector3 to, float time) {
+        Vector3 a = go.transform.localScale;
+        Vector3 b = to;
+
+        float t = 0f;
+        while (t < 1f) {
+            t += Time.deltaTime / time;
+            go.transform.localScale = Vector3.Lerp(a, b, t);
+            yield return null;
+        }
     }
 
     IEnumerator RotBack()

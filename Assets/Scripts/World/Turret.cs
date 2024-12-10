@@ -17,7 +17,7 @@ namespace PortalGame.World {
         private bool canPatrol = true;
 
         [SerializeField]
-        private Transform patrolPosition;
+        private Transform patrolCenter;
 
         [SerializeField]
         private float patrolRadius = 5.0f;
@@ -30,6 +30,9 @@ namespace PortalGame.World {
 
         [Header("Visao")]
         [SerializeField]
+        private bool canSee = true;
+
+        [SerializeField]
         private Transform eyePosition;
 
         [SerializeField]
@@ -40,6 +43,9 @@ namespace PortalGame.World {
 
         [SerializeField]
         private float viewDistance = 5.0f;
+
+        [SerializeField]
+        private float attackDistance = 3.0f;
 
         [Header("Audicao")]
         [SerializeField]
@@ -75,17 +81,49 @@ namespace PortalGame.World {
             animator = GetComponent<Animator>();
         }
 
+        private void OnEnable() {
+            TurretManager.Instance.Register(this);
+        }
+
+        private void OnDisable() {
+            TurretManager.Instance.Unregister(this);
+        }
+
+        private void OnDrawGizmos() {
+            if(patrolCenter != null && canPatrol) {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawWireSphere(patrolCenter.position, patrolRadius);
+            }
+
+            if (canHear) {
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(transform.position, hearingDistance);
+            }
+
+            if (canSee) {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(transform.position, viewDistance);
+
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(transform.position, attackDistance);
+            }
+
+        }
+
         /// <summary>
         /// Manda uma dica de um barulho ouvido pelo inimigo.
         /// </summary>
         public void GiveHint(Vector3 hintPosition) {
+            if (!canHear) {
+                return;
+            }
             float distance = Vector3.Distance(transform.position, hintPosition);
             if (distance > hearingDistance) {
                 return;
             }
             navMeshAgent.CalculatePath(hintPosition, navMeshAgent.path);
             this.currentHintPosition = hintPosition;
-            animator.SetTrigger("Deploy");
+            //animator.SetTrigger("Deploy");
         }
 
         private void SeeForward() {
@@ -123,6 +161,8 @@ namespace PortalGame.World {
             }
             Color glowColor = Color.red * Mathf.Pow(2, seesPlayer ? targetAquiredEyeGlow : defaultEyeGlow);
             mats.ForEach(x => x.SetColor("_EmissionColor", glowColor));
+
+            // TODO usar line renderer com emission pra simular a visao do bixo!
         }
 
         private void Update() {
@@ -151,7 +191,7 @@ namespace PortalGame.World {
                 Debug.Log("Definindo nova posicao de patrulha");
                 float alpha = Random.Range(0, 360);
                 float radius = Random.Range(0, patrolRadius);
-                currentPatrolPosition = new(Mathf.Cos(alpha) * radius, patrolPosition.position.y, Mathf.Sin(alpha) * radius);
+                currentPatrolPosition = new(Mathf.Cos(alpha) * radius, patrolCenter.position.y, Mathf.Sin(alpha) * radius);
                 navMeshAgent.SetDestination(currentPatrolPosition);
             }
         }

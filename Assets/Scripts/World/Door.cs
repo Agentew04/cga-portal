@@ -30,8 +30,7 @@ namespace PortalGame.World {
         [SerializeField]
         private AudioSource audioSource;
 
-        private PlayerMovement playerMovement;
-        private FirstPersonController fpsController;
+        private FpsController fpsController;
 
         public bool IsOpen { get; private set; } = false;
 
@@ -42,12 +41,11 @@ namespace PortalGame.World {
         public Transform BackSide { get; set; }
 
         private void Start() {
-            playerMovement = FindAnyObjectByType<PlayerMovement>();
-            fpsController = FindAnyObjectByType<FirstPersonController>();
+            fpsController = FindAnyObjectByType<FpsController>();
         }
 
         private void Update() {
-            Transform player = playerMovement != null ? playerMovement.transform : fpsController.transform;
+            Transform player = fpsController.transform;
             float distance = Vector3.Distance(player.position, transform.position);
             AutoOpenSide side = GetSide(player);
             if (useProximity && distance <= openingDistance && !IsOpen && (side & autoOpenSide) != AutoOpenSide.None) {

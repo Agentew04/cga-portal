@@ -53,6 +53,8 @@ namespace PortalGame.Player
 
         private void Update()
         {
+            Cursor.lockState = !BlockMovement ? CursorLockMode.Locked : CursorLockMode.None;
+
             // atualiza friccao
             rb.linearDamping = isGrounded ? groundFriction : airFriction;
 
@@ -86,6 +88,9 @@ namespace PortalGame.Player
                 }
             }
 
+            if (BlockMovement) {
+                return;
+            }
             // rotaciona o corpo
             transform.rotation = Quaternion.Slerp(transform.rotation, bodyTargetRotation, mouseSensitivity * Time.deltaTime * 10);
 
@@ -96,7 +101,7 @@ namespace PortalGame.Player
         private void FixedUpdate() {
             // aplica forca para mover o player
             movementInput.Normalize();
-            if (isGrounded) {
+            if (isGrounded && !BlockMovement) {
                 rb.AddForce(moveSpeed * movementInput.y * Time.fixedDeltaTime * transform.forward, ForceMode.VelocityChange);
                 rb.AddForce(moveSpeed * movementInput.x * Time.fixedDeltaTime * transform.right, ForceMode.VelocityChange);
             }
@@ -110,7 +115,7 @@ namespace PortalGame.Player
         }
 
         private void Jump() {
-            if (isGrounded) {
+            if (isGrounded && !BlockMovement) {
                 rb.AddForce(jumpForce * 10 * Vector3.up, ForceMode.Impulse);    
             }
         }

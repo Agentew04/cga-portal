@@ -35,22 +35,17 @@ namespace PortalGame.Player {
         [field: SerializeField]
         public Portal BluePortal { get; set; } = null;
 
-        private PlayerMovement playerMovement;
-        private MouseLook mouseLook;
-        private FirstPersonController fpsController;
+        private FpsController fpsController;
 
         private bool isLocked = false;
         private bool isMuted = false;
 
         private void Start() {
             RenderPipelineManager.beginCameraRendering += RenderPortals;
-            playerMovement = FindAnyObjectByType<PlayerMovement>();
-            mouseLook = FindAnyObjectByType<MouseLook>();
-            fpsController = FindAnyObjectByType<FirstPersonController>();
+            fpsController = FindAnyObjectByType<FpsController>();
         }
 
         private void Update() {
-
             if (Input.GetKeyDown(KeyCode.F1)) {
                 SetLock(!isLocked);
                 pauseMenu.TogglePause();
@@ -81,12 +76,10 @@ namespace PortalGame.Player {
         }
 
         private void Click(PortalType type) {
-            if((mouseLook != null && playerMovement != null &&
-                (mouseLook.BlockMovement || playerMovement.BlockMovement))
-                || (fpsController != null && (!fpsController.cameraCanMove || !fpsController.playerCanMove))) {
+            if(fpsController.BlockMovement) {
                 return;
             }
-
+            
             Ray ray = new(transform.position, transform.forward);
             bool isHit = Physics.Raycast(ray, out RaycastHit hit, 1000.0f);
 
@@ -95,6 +88,10 @@ namespace PortalGame.Player {
             }
 
             bool validSurface = hit.collider.gameObject.layer == LayerMask.NameToLayer("Portalable");
+
+            foreach(var turret in TurretManager.Instance.GetTurrets()) {
+                turret.GiveHint(hit.point);
+            }
             
             Debug.DrawLine(ray.origin, hit.point, Color.red, 5);
             gun.ShootProjectile(type, validSurface, () => {
@@ -174,12 +171,8 @@ namespace PortalGame.Player {
         public void SetLock(bool lockState) {
             isLocked = lockState;
 
-            if (playerMovement != null && mouseLook != null) {
-                playerMovement.BlockMovement = lockState;
-                mouseLook.BlockMovement = lockState;
-            } else if (fpsController != null) {
-                fpsController.cameraCanMove = !lockState;
-                fpsController.playerCanMove = !lockState;
+            if (fpsController != null) {
+                fpsController.BlockMovement = lockState;
             }
         }
 
