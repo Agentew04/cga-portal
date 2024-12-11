@@ -11,9 +11,15 @@ namespace PortalGame.World
     {
         private static TurretManager instance;
         public static TurretManager Instance {
-            get => instance;
+            get {
+                if(instance != null) {
+                    return instance;
+                }
+                instance = FindAnyObjectByType<TurretManager>();
+                return instance;
+            }
             set {
-                if (instance != null && value != null && instance != value) {
+                if (instance != null && instance != value && value != null) {
                     Debug.LogWarning("Tentando criar uma segunda instancia de TurretManager");
                     Destroy(value);
                     return;
@@ -49,7 +55,9 @@ namespace PortalGame.World
         }
 
         public void OnDisable() {
-            Instance = null;
+            if(Instance == this) {
+                Instance = null;
+            }
         }
     }
 }

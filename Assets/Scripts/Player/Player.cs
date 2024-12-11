@@ -134,12 +134,6 @@ namespace PortalGame.Player {
                     RedPortal.LinkedCollider = hit.collider;
                 }
             });
-
-            // avisa a torreta
-            Turret[] turrets = FindObjectsByType<Turret>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-            foreach(Turret turret in turrets) {
-                turret.GiveHint(hit.point);
-            }
         }
 
         private Portal CreatePortal(PortalType type) {

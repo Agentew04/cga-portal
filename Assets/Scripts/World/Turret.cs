@@ -113,7 +113,6 @@ namespace PortalGame.World {
                 Gizmos.color = Color.red;
                 Gizmos.DrawSphere(currentHintPosition, 0.5f);
             }
-
         }
 
         /// <summary>
@@ -125,10 +124,12 @@ namespace PortalGame.World {
             }
             float distance = Vector3.Distance(transform.position, hintPosition);
             if (distance > hearingDistance) {
+                Debug.Log("Dica tava muito longe");
                 return;
             }
-            navMeshAgent.CalculatePath(hintPosition, navMeshAgent.path);
+            navMeshAgent.SetDestination(hintPosition);
             currentHintPosition = hintPosition;
+            Debug.Log("Nova dica: " + hintPosition);
             hasHint = true;
             //animator.SetTrigger("Deploy");
         }
@@ -203,6 +204,26 @@ namespace PortalGame.World {
                 currentPatrolPosition = patrolCenter.position + new Vector3(Mathf.Cos(alpha) * radius, 0, Mathf.Sin(alpha) * radius);
                 navMeshAgent.SetDestination(currentPatrolPosition);
             }
+        }
+
+        public enum TurretState {
+            /// <summary>
+            /// Fica procurando posicoes aleatorias na area de patrulha
+            /// </summary>
+            Patrolling, 
+            /// <summary>
+            /// Ao ouvir uma dica, vai para a posicao e investiga a area
+            /// durante um tempo
+            /// </summary>
+            Investigating,
+            /// <summary>
+            /// Ao ver o jogador, vai ate a ultima posicao vista ate atacar
+            /// </summary>
+            Pursuing,
+            /// <summary>
+            /// Quando o jogador esta em distancia de ataque, atira nele
+            /// </summary>
+            Attacking
         }
     }
 }

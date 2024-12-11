@@ -64,7 +64,7 @@ namespace PortalGame {
 
             var availableAudios = m_AudioSources.Where(x => x.Key == key);
             if (!availableAudios.Any()) {
-                throw new KeyNotFoundException();
+                return null;
             }
 
             return availableAudios.ElementAt(Random.Range(0, availableAudios.Count())).Value;
