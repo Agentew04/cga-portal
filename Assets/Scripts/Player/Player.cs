@@ -40,9 +40,22 @@ namespace PortalGame.Player {
         private bool isLocked = false;
         private bool isMuted = false;
 
+        [Header("Vida")]
+        [SerializeField]
+        private float maxHealth = 100;
+        [SerializeField]
+        private float currentHealth = 100;
+        [SerializeField, Tooltip("Depois dessa quantidade de segundos de um combate, o jogador regenera vida")]
+        private float combatTimer = 10;
+        [SerializeField, Tooltip("Quantos pontos de vida por segundo regenera a vida fora de combate")]
+        private float regenRate = 10;
+
+        private float lastCombateTime = 0;
+
         private void Start() {
             RenderPipelineManager.beginCameraRendering += RenderPortals;
             fpsController = FindAnyObjectByType<FpsController>();
+            currentHealth = maxHealth;
         }
 
         private void Update() {
@@ -56,6 +69,8 @@ namespace PortalGame.Player {
             } else if (Input.GetMouseButtonDown(1)) {
                 Click(PortalType.Orange);
             }
+
+            UpdateHealth();
         }
 
         private void RenderPortals(ScriptableRenderContext ctx, Camera cam) {
@@ -173,6 +188,24 @@ namespace PortalGame.Player {
         public void SetMute(bool muteState) {
             isMuted = muteState;
             audioListener.enabled = !muteState;
+        }
+
+        /// <summary>
+        /// Aplica uma quantidade de dano ao jogador
+        /// </summary>
+        /// <param name="damageAmount"></param>
+        public void InflictDamage(float damageAmount) {
+            lastCombateTime = Time.time;
+            currentHealth -= damageAmount;
+        }
+
+        private void UpdateHealth() {
+            if (Time.time - lastCombateTime > combatTimer && currentHealth < maxHealth) {
+                currentHealth += regenRate * Time.deltaTime;
+                if (currentHealth > maxHealth) {
+                    currentHealth = maxHealth;
+                }
+            }
         }
 
         private void OnDisable() {

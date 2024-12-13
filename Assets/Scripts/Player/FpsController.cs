@@ -2,6 +2,10 @@ using UnityEngine;
 
 namespace PortalGame.Player
 {
+    /// <summary>
+    /// Controlador de primeira pessoa
+    /// baseado em fisica.
+    /// </summary>
     public class FpsController : MonoBehaviour
     {
         private PlayerInput playerInput;

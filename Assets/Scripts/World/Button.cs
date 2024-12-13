@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 
 namespace PortalGame.World
 {
@@ -13,6 +14,7 @@ namespace PortalGame.World
 
         [SerializeField]
         private bool isActivated = false;
+        public bool IsActivated => isActivated;
 
         [SerializeField, ColorUsage(true, true)]
         private Color blueEmission;

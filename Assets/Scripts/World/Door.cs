@@ -63,7 +63,7 @@ namespace PortalGame.World {
             if (audioSource.isPlaying) {
                 audioSource.Stop();
             }
-            audioSource.clip = AudioManager.Instance.GetAudio(AudioType.DoorOpen);
+            //audioSource.clip = AudioManager.Instance.GetAudio(AudioType.DoorOpen);
             audioSource.PlayDelayed(audioDelay);
             IsOpen = true;
         }
@@ -76,7 +76,7 @@ namespace PortalGame.World {
             if (audioSource.isPlaying) {
                 audioSource.Stop();
             }
-            audioSource.clip = AudioManager.Instance.GetAudio(AudioType.DoorClose);
+            //audioSource.clip = AudioManager.Instance.GetAudio(AudioType.DoorClose);
             audioSource.Play();
             IsOpen = false;
         }

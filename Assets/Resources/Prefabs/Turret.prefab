@@ -757,6 +757,9 @@ MonoBehaviour:
   canHear: 1
   hearingDistance: 12
   currentHintPosition: {x: 0, y: 0, z: 0}
+  investigateTime: 5
+  investigationRadius: 5
+  damage: 10
   eyeMesh:
   - {fileID: 1305504741797410914}
   - {fileID: 4451346025187553964}
@@ -765,6 +768,7 @@ MonoBehaviour:
   - {fileID: 2792684177148835823}
   defaultEyeGlow: 2.7
   targetAquiredEyeGlow: 10
+  currentState: 0
 --- !u!195 &8401266328089013750
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -775,7 +779,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
