@@ -59,6 +59,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -156,9 +159,8 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6729792763831494963}
   m_Enabled: 1
-  serializedVersion: 10
+  serializedVersion: 11
   m_Type: 2
-  m_Shape: 0
   m_Color: {r: 0, g: 0.6289654, b: 1, a: 1}
   m_Intensity: 0.002
   m_Range: 0.15
@@ -208,8 +210,12 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!114 &4372462970870701035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5007,6 +5013,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5063,6 +5072,37 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &7961015764537261525
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 379250328565524557}
+  m_Layer: 0
+  m_Name: GrabPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &379250328565524557
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7961015764537261525}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.361, y: -0.574, z: 4.285}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7645158575684748137}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8903196361433840020
 GameObject:
   m_ObjectHideFlags: 0
@@ -9896,6 +9936,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -10023,6 +10066,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -10534,7 +10580,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 5913325e753ce3a489ef06f62e56dbc3,
         type: 3}
       propertyPath: m_Name
-      value: portalgun
+      value: PortalGun
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5913325e753ce3a489ef06f62e56dbc3,
         type: 3}
@@ -10668,12 +10714,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4234637804130459253, guid: 5913325e753ce3a489ef06f62e56dbc3,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: e69267138082c7249a5a9d0ead37df83, type: 2}
     - target: {fileID: 4234637804130459253, guid: 5913325e753ce3a489ef06f62e56dbc3,
         type: 3}
-      propertyPath: m_Materials.Array.data[1]
+      propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: f56e5734f9c21bd4894a4bf5e0f74f44, type: 2}
     - target: {fileID: 4257553129852739159, guid: 5913325e753ce3a489ef06f62e56dbc3,
@@ -10923,6 +10969,10 @@ PrefabInstance:
         type: 3}
       insertIndex: 0
       addedObject: {fileID: 51072905341161583}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5913325e753ce3a489ef06f62e56dbc3,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 379250328565524557}
     - targetCorrespondingSourceObject: {fileID: 8638392792124489052, guid: 5913325e753ce3a489ef06f62e56dbc3,
         type: 3}
       insertIndex: -1
@@ -10973,7 +11023,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &7208882462416079403
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -10987,6 +11037,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -11062,6 +11113,8 @@ MonoBehaviour:
   projectileParticle: {fileID: 5724824188624397799}
   desiredProjectilePosition: {fileID: 51072905341161583}
   audioSource: {fileID: 7128352954273020570}
+  grabLineRenderers: []
+  grabPoint: {fileID: 379250328565524557}
 --- !u!82 &7128352954273020570
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11073,6 +11126,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

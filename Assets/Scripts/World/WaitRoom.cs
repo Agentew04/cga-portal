@@ -24,6 +24,8 @@ namespace PortalGame.World {
 
         public LevelManager Manager { get; set; }
 
+        private bool alreadyRequestedLoad = false;
+
         private void Start() {
             // a porta do inicio comeca desligada pois
             // usamos a do cenario anterior
@@ -46,6 +48,12 @@ namespace PortalGame.World {
             if (other.gameObject.layer != LayerMask.NameToLayer("Player")) {
                 return;
             }
+
+            if (alreadyRequestedLoad) {
+                return;
+            }
+
+            alreadyRequestedLoad = true;
 
             // verifica pois sala inicial nao tem porta de entrada
             if(StartDoor != null) {

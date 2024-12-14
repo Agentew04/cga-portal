@@ -60,6 +60,8 @@ namespace PortalGame.Player {
         [SerializeField]
         private GameObject grabbed;
         private GameObject grabbedLastParent;
+        private float lastAngularDamping;
+        private float lastLinearDamping;
         [SerializeField]
         private LayerMask grabbableLayer;
 
@@ -74,6 +76,9 @@ namespace PortalGame.Player {
                 SetLock(!isLocked);
                 pauseMenu.TogglePause();
             }
+
+            GrabUpdate();
+            UpdateHealth();
 
             if (isLocked) {
                 return;
@@ -90,8 +95,6 @@ namespace PortalGame.Player {
             if (Input.GetKeyDown(KeyCode.E)) {
                 GrabObject();
             }
-
-            UpdateHealth();
         }
 
         private void RenderPortals(ScriptableRenderContext ctx, Camera cam) {
@@ -218,6 +221,13 @@ namespace PortalGame.Player {
         public void InflictDamage(float damageAmount) {
             lastCombatTime = Time.time;
             currentHealth -= damageAmount;
+            if(currentHealth <= 0) {
+                currentHealth = 0;
+                // morreu!
+                Debug.Log("Morreu!");
+                // TODO: eh o fim!!! MOVER ISSO NAO DEIXAR ISSO NO FINAL!!!
+                Destroy(fpsController.gameObject);
+            }
         }
 
         private void UpdateHealth() {
@@ -229,14 +239,29 @@ namespace PortalGame.Player {
             }
         }
 
+        private void GrabUpdate() {
+            if (grabbed != null && grabbed.TryGetComponent(out Rigidbody rb)) {
+                var force = (grabPoint.position - grabbed.transform.position);
+                Debug.DrawRay(grabbed.transform.position, force, Color.red);
+                rb.AddForce(10 * force, ForceMode.Force);
+            }
+        }
+
         private void GrabObject() {
             if(grabbed != null) {
                 // solta objeto
+                gun.ReleaseObject();
                 if(grabbed.TryGetComponent(out Rigidbody rb1)) {
                     // habilita fisica dnv
-                    rb1.isKinematic = false;
+                    rb1.useGravity = true;
+                    rb1.angularDamping = lastAngularDamping;
+                    rb1.linearDamping = lastLinearDamping;
                 }
-                grabbed.transform.parent = grabbedLastParent.transform;
+                if(grabbedLastParent != null) { // pode estar na root
+                    grabbed.transform.parent = grabbedLastParent.transform;
+                } else {
+                    grabbed.transform.parent = null;
+                }
                 grabbed = null;
                 grabbedLastParent = null;
                 return;
@@ -251,13 +276,21 @@ namespace PortalGame.Player {
                 return;
             }
 
+            gun.GrabObject();
             grabbed = hit.collider.gameObject;
-            grabbedLastParent = hit.collider.gameObject.transform.parent.gameObject;
+            if(hit.collider.gameObject.transform.parent != null) {
+                grabbedLastParent = hit.collider.gameObject.transform.parent.gameObject;
+            }
+            grabbed.transform.position = grabPoint.position;
             grabbed.transform.parent = grabPoint;
 
             //disable physics
             if (grabbed.TryGetComponent(out Rigidbody rb2)) {
-                rb2.isKinematic = true;
+                rb2.useGravity = false;
+                lastAngularDamping = rb2.angularDamping;
+                lastLinearDamping = rb2.linearDamping;
+                //rb2.angularDamping = 1000;
+                //rb2.linearDamping = 1000;
             }
         }
 

@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System;
 using UnityEngine;
+
 
 namespace PortalGame.Player {
 
@@ -54,6 +56,12 @@ namespace PortalGame.Player {
         private Animator animator;
         private Action projectileCallback;
 
+        [SerializeField]
+        private List<LineRenderer> grabLineRenderers;
+
+        [SerializeField]
+        private Transform grabPoint;
+
         private void Start() {
             projectileParticleRenderer = projectileParticle.gameObject.GetComponent<ParticleSystemRenderer>();
             animator = GetComponent<Animator>();
@@ -64,6 +72,7 @@ namespace PortalGame.Player {
                 position: desiredProjectilePosition.position, 
                 rotation: desiredProjectilePosition.rotation);
             UpdateLightEmission(LastPortal == PortalType.Blue ? blueColor : orangeColor);
+            UpdateGrabRays();
         }
 
         private void UpdateLightEmission(Color color) {
@@ -149,6 +158,42 @@ namespace PortalGame.Player {
             }
             audioSource.clip = AudioManager.Instance.GetAudio(AudioType.GunFizzle);
             audioSource.Play();
+        }
+
+        public void GrabObject() {
+            animator.SetTrigger("Grab");
+            foreach (var lr in grabLineRenderers) {
+                lr.gameObject.SetActive(true);
+                lr.useWorldSpace = false;
+                // convert grabPoint.position to local coords
+                var localGrabPoint = lr.transform.InverseTransformPoint(grabPoint.position);
+                lr.positionCount = 2;
+                lr.SetPositions(new Vector3[] { 
+                    Vector3.zero,
+                    localGrabPoint
+                });
+            }
+        }
+
+        private void UpdateGrabRays() {
+            foreach (var lr in grabLineRenderers) {
+                // convert grabPoint.position to local coords
+                if (lr.positionCount > 0) {
+                    var localGrabPoint = lr.transform.InverseTransformPoint(grabPoint.position);
+                    lr.SetPositions(new Vector3[] {
+                        Vector3.zero,
+                        localGrabPoint
+                    });
+                }
+            }
+        }
+
+        public void ReleaseObject() {
+            animator.SetTrigger("Release");
+            foreach (var lr in grabLineRenderers) {
+                lr.gameObject.SetActive(false);
+                lr.positionCount = 0;
+            }
         }
     }
 }
