@@ -28,13 +28,14 @@ namespace PortalGame.World {
         private int currentLevelIndex;
         private Level currentLevel;
         [SerializeField]
-        private GameObject previousLoadingCorridor;
+        private WaitRoom previousLoadingCorridor;
         [SerializeField]
-        private GameObject nextLoadingCorridor;
+        private WaitRoom nextLoadingCorridor;
 
         [SerializeField]
         private Player.Player player;
         public Player.Player Player => player;
+
 
         private void Start() {
             scenesLoaded = Enumerable.Repeat(false, levelScenes.Count).ToList();
@@ -82,21 +83,23 @@ namespace PortalGame.World {
             // descarrega cena atual
             if (currentLevel != null) {
                 Debug.LogFormat("Descarregando cena anterior(era {0})", currentLevelIndex);
-                SceneManager.UnloadSceneAsync(levelScenes[currentLevel.LevelIndex].BuildIndex);
+                int unloadIndex = currentLevel.LevelIndex;
+                var unloadOp = SceneManager.UnloadSceneAsync(levelScenes[currentLevel.LevelIndex].BuildIndex);
+                unloadOp.completed += (e) => {
+                    scenesLoaded[unloadIndex] = false;
+                };
             }
 
             var op = SceneManager.LoadSceneAsync(levelScenes[index].BuildIndex, LoadSceneMode.Additive);
             op.completed += (op) => {
                 scenesLoaded[index] = true;
-                if (index > 0) {
-                    scenesLoaded[index - 1] = false;
-                }
 
                 currentLevelIndex = index;
+                // procura por todos pois nivel antigo pode estar carregado ainda
                 var levels = FindObjectsByType<Level>(FindObjectsSortMode.None);
                 currentLevel = Array.Find(levels, (x) => x.LevelIndex == index);
                 if(currentLevel == null) {
-                    Debug.LogError("Level not found");
+                    Debug.LogError("Scene Loaded but Level script not found!");
                     return;
                 }
 
@@ -105,25 +108,53 @@ namespace PortalGame.World {
                     Destroy(previousLoadingCorridor);
                 }
 
+
                 previousLoadingCorridor = nextLoadingCorridor;
-                var leveldiffpos = previousLoadingCorridor.GetComponent<WaitRoom>().EndDoorPosition.position - currentLevel.StartDoorPosition.position;
-               
+
+                // conecta entrada do nivel na saida do corredor anterior
+                var leveldiffpos = previousLoadingCorridor.EndDoor.transform.position - currentLevel.StartDoor.transform.position;
                 currentLevel.transform.position += leveldiffpos;
 
                 var inverse = Quaternion.AngleAxis(180, Vector3.up);
-                var finalRotation = currentLevel.EndDoorPosition.rotation * inverse;
-                // spawn loading corridor on the end door coordinate
+                var finalRotation = currentLevel.EndDoor.transform.rotation * inverse;
+
+                // cria corredor de loading no final do nivel
                 nextLoadingCorridor = Instantiate(
                     original: loadingRoomPrefab, 
-                    position: currentLevel.EndDoorPosition.position, 
+                    position: currentLevel.EndDoor.transform.position,
                     rotation: finalRotation
-                );
-                var nextwaitroom = nextLoadingCorridor.GetComponent<WaitRoom>();
-                nextwaitroom.StartDoor = currentLevel.EndDoorPosition.GetComponent<Door>();
-                nextwaitroom.Manager = this;
+                ).GetComponent<WaitRoom>();
+
+                // corrige potencial erro de posicao
+                nextLoadingCorridor.transform.position += currentLevel.EndDoor.transform.position - nextLoadingCorridor.StartDoor.transform.position;
+
+                nextLoadingCorridor.Manager = this;
+
+                // cena fica soh com porta final
+                currentLevel.StartDoor.gameObject.SetActive(false);
+                // previous corridor fica com porta final
+                previousLoadingCorridor.EndDoor.gameObject.SetActive(true);
+                // proximo corredor fica soh com a porta final tambem
+                nextLoadingCorridor.StartDoor.gameObject.SetActive(false);
+
+                // sincroniza materiais das tampas das portas
+                previousLoadingCorridor.EndDoor.BackMaterial = currentLevel.StartDoor.BackMaterial;
+                nextLoadingCorridor.StartDoor.BackMaterial = currentLevel.EndDoor.BackMaterial;
 
                 callback?.Invoke();
             };
+        }
+    
+        private abstract class ScenePart { 
+            public bool StartDoorEnabled { get; set; }
+            public bool EndDoorEnabled { get; set; }
+            public bool Loaded { get; set; }
+        }
+        private class SceneLevel : ScenePart {
+            public int LevelIndex { get; set; }
+        }
+        private class SceneConnector : ScenePart { 
+            public GameObject Root { get; set; }
         }
     }
 }

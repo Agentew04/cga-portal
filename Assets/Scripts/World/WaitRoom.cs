@@ -16,16 +16,27 @@ namespace PortalGame.World {
         /// A posicao onde fica a porta do fim do corredor.
         /// </summary>
         [field: SerializeField]
-        public Transform EndDoorPosition { get; private set; }
+        public Door EndDoor { get; private set; }
 
-        [SerializeField]
-        private Door endDoor;
 
-        [field: SerializeField, Tooltip("Referencia a porta do nivel anterior")]
+        [field: SerializeField]
         public Door StartDoor { get; set; }
 
         public LevelManager Manager { get; set; }
 
+        private void Start() {
+            // a porta do inicio comeca desligada pois
+            // usamos a do cenario anterior
+            if(StartDoor != null) {
+                StartDoor.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// Chamado quando o jogador para pelo trigger
+        /// </summary>
+        /// <param name="other"></param>
+        /// <param name="isEntering"></param>
         public void LoadNextLevel(Collider other, bool isEntering) {
             if (!isEntering) {
                 return;
@@ -36,11 +47,15 @@ namespace PortalGame.World {
                 return;
             }
 
-            StartDoor.Close();
-            StartDoor.IsLocked = true;
+            // verifica pois sala inicial nao tem porta de entrada
+            if(StartDoor != null) {
+                StartDoor.gameObject.SetActive(true);
+                StartDoor.Close();
+                StartDoor.IsLocked = true;
+            }
             Manager.LoadNextLevel(() => {
                 // destrava a porta do final do corredior
-                endDoor.IsLocked = false;
+                EndDoor.IsLocked = false;
             });
         }
     }

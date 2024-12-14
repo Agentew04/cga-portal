@@ -40,6 +40,22 @@ namespace PortalGame.World {
         [field: SerializeField]
         public Transform BackSide { get; set; }
 
+        [SerializeField]
+        private MeshRenderer frontCover;
+
+        [SerializeField]
+        private MeshRenderer backCover;
+
+        public Material FrontMaterial {
+            get => frontCover.material;
+            set => frontCover.material = value;
+        }
+
+        public Material BackMaterial {
+            get => backCover.material;
+            set => backCover.material = value;
+        }
+
         private void Start() {
             fpsController = FindAnyObjectByType<FpsController>();
         }
@@ -63,7 +79,7 @@ namespace PortalGame.World {
             if (audioSource.isPlaying) {
                 audioSource.Stop();
             }
-            //audioSource.clip = AudioManager.Instance.GetAudio(AudioType.DoorOpen);
+            audioSource.clip = AudioManager.Instance.GetAudio(AudioType.DoorOpen);
             audioSource.PlayDelayed(audioDelay);
             IsOpen = true;
         }
@@ -76,7 +92,7 @@ namespace PortalGame.World {
             if (audioSource.isPlaying) {
                 audioSource.Stop();
             }
-            //audioSource.clip = AudioManager.Instance.GetAudio(AudioType.DoorClose);
+            audioSource.clip = AudioManager.Instance.GetAudio(AudioType.DoorClose);
             audioSource.Play();
             IsOpen = false;
         }
