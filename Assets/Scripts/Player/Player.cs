@@ -50,7 +50,18 @@ namespace PortalGame.Player {
         [SerializeField, Tooltip("Quantos pontos de vida por segundo regenera a vida fora de combate")]
         private float regenRate = 10;
 
-        private float lastCombateTime = 0;
+        private float lastCombatTime = 0;
+
+        [Header("Pegador")]
+        [SerializeField, Tooltip("Distancia maxima que pode pegar objetos")]
+        private float grabDistance = 5;
+        [SerializeField]
+        private Transform grabPoint;
+        [SerializeField]
+        private GameObject grabbed;
+        private GameObject grabbedLastParent;
+        [SerializeField]
+        private LayerMask grabbableLayer;
 
         private void Start() {
             RenderPipelineManager.beginCameraRendering += RenderPortals;
@@ -64,10 +75,20 @@ namespace PortalGame.Player {
                 pauseMenu.TogglePause();
             }
 
+            if (isLocked) {
+                return;
+            }
+
+            // a partir daqui so atualiza quando nao pausado
+
             if(Input.GetMouseButtonDown(0)){
                 Click(PortalType.Blue);
             } else if (Input.GetMouseButtonDown(1)) {
                 Click(PortalType.Orange);
+            }
+
+            if (Input.GetKeyDown(KeyCode.E)) {
+                GrabObject();
             }
 
             UpdateHealth();
@@ -195,16 +216,48 @@ namespace PortalGame.Player {
         /// </summary>
         /// <param name="damageAmount"></param>
         public void InflictDamage(float damageAmount) {
-            lastCombateTime = Time.time;
+            lastCombatTime = Time.time;
             currentHealth -= damageAmount;
         }
 
         private void UpdateHealth() {
-            if (Time.time - lastCombateTime > combatTimer && currentHealth < maxHealth) {
+            if (Time.time - lastCombatTime > combatTimer && currentHealth < maxHealth) {
                 currentHealth += regenRate * Time.deltaTime;
                 if (currentHealth > maxHealth) {
                     currentHealth = maxHealth;
                 }
+            }
+        }
+
+        private void GrabObject() {
+            if(grabbed != null) {
+                // solta objeto
+                if(grabbed.TryGetComponent(out Rigidbody rb1)) {
+                    // habilita fisica dnv
+                    rb1.isKinematic = false;
+                }
+                grabbed.transform.parent = grabbedLastParent.transform;
+                grabbed = null;
+                grabbedLastParent = null;
+                return;
+            }
+            bool isHit = Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, grabDistance);
+            if (!isHit) {
+                return;
+            }
+
+            // verifica se o objeto pode ser pego
+            if (((1 << hit.collider.gameObject.layer) & grabbableLayer) == 0) {
+                return;
+            }
+
+            grabbed = hit.collider.gameObject;
+            grabbedLastParent = hit.collider.gameObject.transform.parent.gameObject;
+            grabbed.transform.parent = grabPoint;
+
+            //disable physics
+            if (grabbed.TryGetComponent(out Rigidbody rb2)) {
+                rb2.isKinematic = true;
             }
         }
 
