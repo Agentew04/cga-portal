@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using PortalGame.Player;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
@@ -29,6 +30,14 @@ public class Portal : MonoBehaviour
     List<PortalTraveller> trackedTravellers;
     MeshFilter screenMeshFilter;
 
+    [SerializeField]
+    private Texture2D blueTexture;
+    [SerializeField]
+    private Texture2D orangeTexture;
+    [field: SerializeField]
+    public PortalType PortalType { get; set; }
+    private PortalType lastUsed;
+
     void Awake()
     {
         playerCam = Camera.main;
@@ -36,12 +45,19 @@ public class Portal : MonoBehaviour
         portalCam.enabled = false;
         trackedTravellers = new List<PortalTraveller>();
         screenMeshFilter = screen.GetComponent<MeshFilter>();
-        screen.material.SetInteger("displayMask", 1);
+        screen.material.SetInteger("displayMask", 0);
     }
 
     void LateUpdate()
     {
         HandleTravellers();
+    }
+
+    private void Update() {
+        if(lastUsed != PortalType) {
+            screen.material.SetTexture("_InactiveTexture", PortalType == PortalType.Blue ? blueTexture : orangeTexture);
+            lastUsed = PortalType;
+        }
     }
 
     void HandleTravellers()
@@ -66,7 +82,6 @@ public class Portal : MonoBehaviour
                 linkedPortal.OnTravellerEnterPortal(traveller);
                 trackedTravellers.RemoveAt(i);
                 i--;
-
             }
             else
             {
@@ -334,7 +349,9 @@ public class Portal : MonoBehaviour
             traveller.EnterPortalThreshold(isRotated);
             traveller.previousOffsetFromPortal = traveller.transform.position - transform.position;
             trackedTravellers.Add(traveller);
-            Physics.IgnoreCollision(traveller.GetComponent<Collider>(), LinkedCollider);
+            if(LinkedCollider != null) {
+                Physics.IgnoreCollision(traveller.GetComponent<Collider>(), LinkedCollider);
+            }
         }
     }
 

@@ -141,6 +141,7 @@ namespace PortalGame.Player {
                     // cria o portal
                     if(BluePortal == null) {
                         BluePortal = CreatePortal(type);
+                        BluePortal.PortalType = PortalType.Blue;
                         if (RedPortal != null) {
                             // linka os dois
                             BluePortal.linkedPortal = RedPortal;
@@ -158,6 +159,7 @@ namespace PortalGame.Player {
                     // cria o portal
                     if (RedPortal == null) {
                         RedPortal = CreatePortal(type);
+                        RedPortal.PortalType = PortalType.Orange;
                         if (BluePortal != null) {
                             // linka os dois
                             BluePortal.linkedPortal = RedPortal;

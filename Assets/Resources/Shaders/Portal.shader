@@ -2,7 +2,7 @@
 {
     Properties
     {
-        _InactiveColour ("Inactive Colour", Color) = (1, 1, 1, 1)
+        _InactiveTexture ("Inactive Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -20,16 +20,18 @@
             struct appdata
             {
                 float4 vertex : POSITION;
+                float2 uv : TEXCOORD0; // Adiciona as coordenadas UV
             };
 
             struct v2f
             {
                 float4 vertex : SV_POSITION;
                 float4 screenPos : TEXCOORD0;
+                float2 uv : TEXCOORD1; // Adiciona as coordenadas UV
             };
 
             sampler2D _MainTex;
-            float4 _InactiveColour;
+            sampler2D _InactiveTexture;
             int displayMask; // set to 1 to display texture, otherwise will draw test colour
             
 
@@ -38,6 +40,7 @@
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.screenPos = ComputeScreenPos(o.vertex);
+                o.uv = v.uv;
                 return o;
             }
 
@@ -45,7 +48,8 @@
             {
                 float2 uv = i.screenPos.xy / i.screenPos.w;
                 fixed4 portalCol = tex2D(_MainTex, uv);
-                return portalCol * displayMask + _InactiveColour * (1-displayMask);
+                fixed4 inactiveCol = tex2D(_InactiveTexture, i.uv);
+                return portalCol * displayMask + inactiveCol * (1-displayMask);
             }
             ENDCG
         }
