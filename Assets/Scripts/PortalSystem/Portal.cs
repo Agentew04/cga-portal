@@ -36,9 +36,25 @@ public class Portal : MonoBehaviour
     private Texture2D orangeTexture;
     [field: SerializeField]
     public PortalType PortalType { get; set; }
-    private PortalType lastUsed;
+    private PortalType lastUsed = PortalType.None;
 
-    void Awake()
+    [SerializeField]
+    private Material blueBorder;
+
+    [SerializeField]
+    private Material orangeBorder;
+
+    [SerializeField]
+    private MeshRenderer borderRenderer;
+
+    [SerializeField]
+    private List<GameObject> corners;
+
+    [SerializeField]
+    private MeshCollider portalBorderCollider;
+    public MeshCollider PortalBorderCollider => portalBorderCollider;
+
+    private void Awake()
     {
         playerCam = Camera.main;
         portalCam = GetComponentInChildren<Camera>();
@@ -56,6 +72,7 @@ public class Portal : MonoBehaviour
     private void Update() {
         if(lastUsed != PortalType) {
             screen.material.SetTexture("_InactiveTexture", PortalType == PortalType.Blue ? blueTexture : orangeTexture);
+            borderRenderer.material = PortalType == PortalType.Blue ? blueBorder : orangeBorder;
             lastUsed = PortalType;
         }
     }

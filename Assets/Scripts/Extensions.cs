@@ -34,5 +34,22 @@ namespace PortalGame {
             }
             return null;
         }
+
+        public static List<Vector3> GetCorners(this Bounds bounds) {
+            Vector3 min = bounds.min;
+            Vector3 max = bounds.max;
+            List<Vector3> corners = new(8) {
+                new Vector3(min.x, min.y, min.z),
+                new Vector3(min.x, min.y, max.z),
+                new Vector3(min.x, max.y, min.z),
+                new Vector3(min.x, max.y, max.z),
+                new Vector3(max.x, min.y, min.z),
+                new Vector3(max.x, min.y, max.z),
+                new Vector3(max.x, max.y, min.z),
+                new Vector3(max.x, max.y, max.z)
+            };
+
+            return corners;
+        }
     }
 }

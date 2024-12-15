@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using PortalGame.World;
+using System.Transactions;
 
 namespace PortalGame.Player {
 
@@ -131,7 +132,37 @@ namespace PortalGame.Player {
             foreach(var turret in TurretManager.Instance.GetTurrets()) {
                 turret.GiveHint(hit.point);
             }
-            
+
+            Portal portal = type == PortalType.Blue ? BluePortal : RedPortal;
+
+            // save old values
+            Vector3 oldPosition = portal != null ? portal.transform.position : Vector3.zero;
+            Quaternion oldRotation = portal != null ? portal.transform.rotation : Quaternion.identity;
+            // move and rotate to new position
+            bool wasnull = portal == null;
+            if (portal != null) {
+                wasnull = true;
+                portal = CreatePortal(type);
+                Debug.Log("Usando portal de testes");
+            }
+            portal.transform.SetPositionAndRotation(hit.point + hit.normal * 0.01f, Quaternion.LookRotation((type == PortalType.Orange ? -1 : 1)*hit.normal));
+            Physics.SyncTransforms();
+            if (!PortalFits(portal, hit.normal)) {
+                Debug.Log("Dei override na disponibilidade");
+                validSurface = false;
+            }
+            if (wasnull) {
+                // destroi portal de testes
+                Destroy(portal.gameObject);
+                Debug.Log("Deletei portal de testes");
+                portal = null;
+            } else {
+                // volta para a posicao original
+                portal.transform.SetPositionAndRotation(oldPosition, oldRotation);
+            }
+            Physics.SyncTransforms();
+
+
             Debug.DrawLine(ray.origin, hit.point, Color.red, 5);
             gun.ShootProjectile(type, validSurface, () => {
                 if (!validSurface) {
@@ -151,7 +182,7 @@ namespace PortalGame.Player {
 
                     // reposiciona o portal
                     BluePortal.transform.SetPositionAndRotation(
-                        position: hit.collider.transform.position + hit.normal * 0.01f, 
+                        position: hit.point + hit.normal * 0.01f, 
                         rotation: Quaternion.LookRotation(hit.normal)
                     );
                     BluePortal.LinkedCollider = hit.collider;
@@ -197,6 +228,26 @@ namespace PortalGame.Player {
 
             // sinaliza pra arma fazer animacao de tururu
             gun.Fizzle();
+        }
+
+        private bool PortalFits(Portal p, Vector3 normal) {
+            // draw the p position
+            Debug.DrawRay(p.PortalBorderCollider.transform.position, p.PortalBorderCollider.transform.right, Color.red, 1);
+            Debug.DrawRay(p.PortalBorderCollider.transform.position, p.PortalBorderCollider.transform.up, Color.green, 1);
+            Debug.DrawRay(p.PortalBorderCollider.transform.position, p.PortalBorderCollider.transform.forward, Color.blue, 1);
+            var corners = p.PortalBorderCollider.bounds.GetCorners();
+            bool anyFalse = false;
+            foreach (var corner in corners) {
+                // raycast na direcao do portal
+                Ray ray = new Ray(corner, -normal);
+                LayerMask layer = LayerMask.GetMask("Portalable");
+                bool isHit = Physics.Raycast(ray, out RaycastHit hit, 1.0f, layer);
+                Debug.DrawRay(ray.origin, ray.direction, isHit ? Color.green : Color.red, 5);
+                if (!isHit) {
+                    anyFalse = true;
+                }
+            }
+            return !anyFalse;
         }
 
         /// <summary>

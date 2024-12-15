@@ -3,6 +3,7 @@
     Properties
     {
         _InactiveTexture ("Inactive Texture", 2D) = "white" {}
+        displayMask ("Display Mask", Integer) = 1
     }
     SubShader
     {
