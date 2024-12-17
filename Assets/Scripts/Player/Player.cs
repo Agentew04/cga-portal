@@ -81,6 +81,8 @@ namespace PortalGame.Player {
             GrabUpdate();
             UpdateHealth();
 
+            EnsureUpright();
+
             if (isLocked) {
                 return;
             }
@@ -135,32 +137,36 @@ namespace PortalGame.Player {
 
             Portal portal = type == PortalType.Blue ? BluePortal : RedPortal;
 
-            // save old values
-            Vector3 oldPosition = portal != null ? portal.transform.position : Vector3.zero;
-            Quaternion oldRotation = portal != null ? portal.transform.rotation : Quaternion.identity;
-            // move and rotate to new position
-            bool wasnull = portal == null;
-            if (portal != null) {
-                wasnull = true;
-                portal = CreatePortal(type);
-                Debug.Log("Usando portal de testes");
+            List<Collider> portalWallColliders = new();
+            if (validSurface) {
+                // save old values
+                Vector3 oldPosition = portal != null ? portal.transform.position : Vector3.zero;
+                Quaternion oldRotation = portal != null ? portal.transform.rotation : Quaternion.identity;
+                // move and rotate to new position
+                bool wasnull = portal == null;
+                if (portal == null) {
+                    wasnull = true;
+                    portal = CreatePortal(type);
+                    portal.PortalType = type;
+                }
+                var rot = (type == PortalType.Orange ? -1 : 1) * hit.normal;
+                portal.transform.SetPositionAndRotation(hit.point + hit.normal * 0.05f, Quaternion.LookRotation(rot, Vector3.up));
+                Physics.SyncTransforms();
+                if (!PortalFits(portal, hit.normal, out portalWallColliders)) {
+                    Debug.Log("Nao passou nos testes\nDei override na disponibilidade");
+                    validSurface = false;
+                } else {
+                }
+                if (wasnull) {
+                    // destroi portal de testes
+                    Destroy(portal.gameObject);
+                    portal = null;
+                } else {
+                    // volta para a posicao original
+                    portal.transform.SetPositionAndRotation(oldPosition, oldRotation);
+                }
+                Physics.SyncTransforms();
             }
-            portal.transform.SetPositionAndRotation(hit.point + hit.normal * 0.01f, Quaternion.LookRotation((type == PortalType.Orange ? -1 : 1)*hit.normal));
-            Physics.SyncTransforms();
-            if (!PortalFits(portal, hit.normal)) {
-                Debug.Log("Dei override na disponibilidade");
-                validSurface = false;
-            }
-            if (wasnull) {
-                // destroi portal de testes
-                Destroy(portal.gameObject);
-                Debug.Log("Deletei portal de testes");
-                portal = null;
-            } else {
-                // volta para a posicao original
-                portal.transform.SetPositionAndRotation(oldPosition, oldRotation);
-            }
-            Physics.SyncTransforms();
 
 
             Debug.DrawLine(ray.origin, hit.point, Color.red, 5);
@@ -168,51 +174,36 @@ namespace PortalGame.Player {
                 if (!validSurface) {
                     return;
                 }
-                if(type == PortalType.Blue) {
-                    // cria o portal
-                    if(BluePortal == null) {
-                        BluePortal = CreatePortal(type);
-                        BluePortal.PortalType = PortalType.Blue;
-                        if (RedPortal != null) {
-                            // linka os dois
-                            BluePortal.linkedPortal = RedPortal;
-                            RedPortal.linkedPortal = BluePortal;
-                        }
+                // cria portal se nao existia
+                if(portal == null) {
+                    portal = CreatePortal(type);
+                    if(type == PortalType.Blue) {
+                        BluePortal = portal;
+                    } else {
+                        RedPortal = portal;
                     }
-
-                    // reposiciona o portal
-                    BluePortal.transform.SetPositionAndRotation(
-                        position: hit.point + hit.normal * 0.01f, 
-                        rotation: Quaternion.LookRotation(hit.normal)
-                    );
-                    BluePortal.LinkedCollider = hit.collider;
-                } else {
-                    // cria o portal
-                    if (RedPortal == null) {
-                        RedPortal = CreatePortal(type);
-                        RedPortal.PortalType = PortalType.Orange;
-                        if (BluePortal != null) {
-                            // linka os dois
-                            BluePortal.linkedPortal = RedPortal;
-                            RedPortal.linkedPortal = BluePortal;
-                        }
-                    } 
-
-                    // reposiciona o portal
-                    RedPortal.transform.SetPositionAndRotation(
-                        position: hit.collider.transform.position + hit.normal * 0.01f, 
-                        rotation: Quaternion.LookRotation(-hit.normal)
-                    );
-                    RedPortal.LinkedCollider = hit.collider;
+                    if (BluePortal != null && RedPortal != null) {
+                        BluePortal.linkedPortal = RedPortal;
+                        RedPortal.linkedPortal = BluePortal;
+                    }
                 }
+
+                // reposiciona o portal
+                portal.transform.SetPositionAndRotation(
+                    position: hit.point + hit.normal * 0.05f,
+                    rotation: Quaternion.LookRotation((type == PortalType.Orange ? -1 : 1) * hit.normal)
+                );
+                portal.LinkedColliders.Clear();
+                portal.LinkedColliders.AddRange(portalWallColliders);
             });
         }
 
         private Portal CreatePortal(PortalType type) {
             GameObject portal = Instantiate(portalPrefab, Vector3.zero, Quaternion.identity);
             portal.name = "Portal " + type;
-            // definir cor certa do portal aqui
-            return portal.GetComponent<Portal>();
+            Portal p = portal.GetComponent<Portal>();
+            p.PortalType = type;
+            return p;
         }
 
         public void ClearPortals() {
@@ -230,13 +221,14 @@ namespace PortalGame.Player {
             gun.Fizzle();
         }
 
-        private bool PortalFits(Portal p, Vector3 normal) {
+        private static bool PortalFits(Portal p, Vector3 normal, out List<Collider> colliders) {
             // draw the p position
             Debug.DrawRay(p.PortalBorderCollider.transform.position, p.PortalBorderCollider.transform.right, Color.red, 1);
             Debug.DrawRay(p.PortalBorderCollider.transform.position, p.PortalBorderCollider.transform.up, Color.green, 1);
             Debug.DrawRay(p.PortalBorderCollider.transform.position, p.PortalBorderCollider.transform.forward, Color.blue, 1);
             var corners = p.PortalBorderCollider.bounds.GetCorners();
             bool anyFalse = false;
+            colliders = new();
             foreach (var corner in corners) {
                 // raycast na direcao do portal
                 Ray ray = new Ray(corner, -normal);
@@ -245,6 +237,11 @@ namespace PortalGame.Player {
                 Debug.DrawRay(ray.origin, ray.direction, isHit ? Color.green : Color.red, 5);
                 if (!isHit) {
                     anyFalse = true;
+                } else {
+                    // hitou
+                    if (!colliders.Contains(hit.collider)) {
+                        colliders.Add(hit.collider);
+                    }
                 }
             }
             return !anyFalse;
@@ -290,6 +287,22 @@ namespace PortalGame.Player {
                     currentHealth = maxHealth;
                 }
             }
+        }
+
+        private void EnsureUpright() {
+            // rotacao do fpsController sempre é projetada no chao
+            // get upwards quaternion
+            Vector3 forwardProjected = Vector3.ProjectOnPlane(fpsController.transform.forward, Vector3.up).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(forwardProjected, Vector3.up);
+
+            // se o angulo entre o up e o player for != 90, tem q ajustar
+            float angle = Quaternion.Angle(fpsController.transform.rotation, targetRotation);
+            float tolerance = 0.1f;
+            if (angle > tolerance) {
+                // Rotaciona o player suavemente para o alvo
+                fpsController.transform.rotation = Quaternion.Slerp(fpsController.transform.rotation, targetRotation, 10f * Time.deltaTime);
+            }
+
         }
 
         private void GrabUpdate() {

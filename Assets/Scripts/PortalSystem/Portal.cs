@@ -11,9 +11,10 @@ public class Portal : MonoBehaviour
     [Header("Main Settings")]
     public Portal linkedPortal;
     public MeshRenderer screen;
+    private Vector3 originalScreenPosition;
     public int recursionLimit = 5;
 
-    public Collider LinkedCollider { get; set; }
+    public List<Collider> LinkedColliders { get; set; }
 
     [Header("Advanced Settings")]
     public float nearClipOffset = 0.05f;
@@ -62,6 +63,8 @@ public class Portal : MonoBehaviour
         trackedTravellers = new List<PortalTraveller>();
         screenMeshFilter = screen.GetComponent<MeshFilter>();
         screen.material.SetInteger("displayMask", 0);
+        originalScreenPosition = screen.transform.localPosition;
+        LinkedColliders = new();
     }
 
     void LateUpdate()
@@ -285,7 +288,8 @@ public class Portal : MonoBehaviour
         Transform screenT = screen.transform;
         bool camFacingSameDirAsPortal = Vector3.Dot(transform.forward, transform.position - viewPoint) > 0;
         screenT.localScale = new Vector3(screenT.localScale.x, screenT.localScale.y, screenThickness);
-        screenT.localPosition = Vector3.forward * screenThickness * ((camFacingSameDirAsPortal) ? 0.5f : -0.5f);
+        screenT.localPosition = originalScreenPosition + 
+            ((camFacingSameDirAsPortal) ? 0.5f : -0.5f) * screenThickness * Vector3.forward;
         return screenThickness;
     }
 
@@ -366,8 +370,8 @@ public class Portal : MonoBehaviour
             traveller.EnterPortalThreshold(isRotated);
             traveller.previousOffsetFromPortal = traveller.transform.position - transform.position;
             trackedTravellers.Add(traveller);
-            if(LinkedCollider != null) {
-                Physics.IgnoreCollision(traveller.GetComponent<Collider>(), LinkedCollider);
+            foreach(var coll in LinkedColliders) {
+                Physics.IgnoreCollision(traveller.GetComponent<Collider>(), coll);
             }
         }
     }
@@ -388,7 +392,9 @@ public class Portal : MonoBehaviour
         {
             traveller.ExitPortalThreshold(isRotated);
             trackedTravellers.Remove(traveller);
-            Physics.IgnoreCollision(traveller.GetComponent<Collider>(), LinkedCollider, false);
+            foreach (var coll in LinkedColliders) {
+                Physics.IgnoreCollision(traveller.GetComponent<Collider>(), coll, false);
+            }
         }
     }
 

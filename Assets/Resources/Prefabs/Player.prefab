@@ -57,7 +57,7 @@ MonoBehaviour:
   airFriction: 0.1
   groundMask:
     serializedVersion: 2
-    m_Bits: 9
+    m_Bits: 13
   groundDistance: 0.1
   groundCheck: {fileID: 2036815690223526845}
   head: {fileID: 6995522177717632942}

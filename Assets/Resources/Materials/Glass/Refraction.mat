@@ -45,7 +45,8 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Strenght: -0.03
+    - _SineTile: 196.7
+    - _Strenght: 1.0035
     m_Colors:
     - _Tiling: {r: 1, g: 0.2, b: 0, a: 0}
   m_BuildTextureStacks: []

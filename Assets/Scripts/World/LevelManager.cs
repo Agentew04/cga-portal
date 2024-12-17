@@ -99,7 +99,7 @@ namespace PortalGame.World {
                 var levels = FindObjectsByType<Level>(FindObjectsSortMode.None);
                 currentLevel = Array.Find(levels, (x) => x.LevelIndex == index);
                 if(currentLevel == null) {
-                    Debug.LogError("Scene Loaded but Level script not found!");
+                    Debug.LogError("Scene Loaded but Level script not found! Talvez o indice esteja errado??");
                     return;
                 }
 
