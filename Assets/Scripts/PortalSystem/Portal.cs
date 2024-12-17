@@ -365,7 +365,7 @@ public class Portal : MonoBehaviour
 
     void OnTravellerEnterPortal(PortalTraveller traveller)
     {
-        if (!trackedTravellers.Contains(traveller))
+        if (!trackedTravellers.Contains(traveller) && linkedPortal != null)
         {
             traveller.EnterPortalThreshold(isRotated);
             traveller.previousOffsetFromPortal = traveller.transform.position - transform.position;
@@ -388,7 +388,7 @@ public class Portal : MonoBehaviour
     void OnTriggerExit(Collider other)
     {
         var traveller = other.GetComponent<PortalTraveller>();
-        if (traveller && trackedTravellers.Contains(traveller))
+        if (traveller && trackedTravellers.Contains(traveller) && linkedPortal != null)
         {
             traveller.ExitPortalThreshold(isRotated);
             trackedTravellers.Remove(traveller);

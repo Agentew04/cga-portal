@@ -4,6 +4,7 @@ using Eflatun.SceneReference;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using System;
+using static UnityEngine.GraphicsBuffer;
 
 namespace PortalGame.World {
 
@@ -91,7 +92,9 @@ namespace PortalGame.World {
             }
 
             var op = SceneManager.LoadSceneAsync(levelScenes[index].BuildIndex, LoadSceneMode.Additive);
+            Debug.Log("Request made");
             op.completed += (op) => {
+                Debug.Log("Scene Loaded");
                 scenesLoaded[index] = true;
 
                 currentLevelIndex = index;
@@ -105,19 +108,22 @@ namespace PortalGame.World {
 
                 // deleta corredor antigo
                 if (previousLoadingCorridor != null) {
-                    Destroy(previousLoadingCorridor);
+                    Debug.Log("Deletando corredor: "+previousLoadingCorridor.gameObject.name);
+                    Destroy(previousLoadingCorridor.gameObject);
                 }
 
 
                 previousLoadingCorridor = nextLoadingCorridor;
 
                 // conecta entrada do nivel na saida do corredor anterior
+                // rotaciona startDoor do nivel atual para a posicao da endDoor do corredor anterior
+                var transf = previousLoadingCorridor.EndDoor.transform.rotation * Quaternion.Inverse(currentLevel.StartDoor.transform.rotation);
+                currentLevel.transform.rotation = transf * currentLevel.transform.rotation;
                 var leveldiffpos = previousLoadingCorridor.EndDoor.transform.position - currentLevel.StartDoor.transform.position;
                 currentLevel.transform.position += leveldiffpos;
 
-                var inverse = Quaternion.AngleAxis(180, Vector3.up);
-                var finalRotation = currentLevel.EndDoor.transform.rotation * inverse;
-
+                // conecta prox corredor no final do nivel
+                var finalRotation = currentLevel.EndDoor.transform.rotation * Quaternion.Euler(0, 180, 0);
                 // cria corredor de loading no final do nivel
                 nextLoadingCorridor = Instantiate(
                     original: loadingRoomPrefab, 
@@ -143,6 +149,7 @@ namespace PortalGame.World {
 
                 callback?.Invoke();
             };
+            Debug.Log("Setted callback");
         }
     
         private abstract class ScenePart { 

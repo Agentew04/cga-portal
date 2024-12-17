@@ -153,9 +153,7 @@ namespace PortalGame.Player {
                 portal.transform.SetPositionAndRotation(hit.point + hit.normal * 0.05f, Quaternion.LookRotation(rot, Vector3.up));
                 Physics.SyncTransforms();
                 if (!PortalFits(portal, hit.normal, out portalWallColliders)) {
-                    Debug.Log("Nao passou nos testes\nDei override na disponibilidade");
                     validSurface = false;
-                } else {
                 }
                 if (wasnull) {
                     // destroi portal de testes
