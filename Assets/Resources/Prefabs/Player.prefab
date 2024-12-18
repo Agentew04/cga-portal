@@ -358,7 +358,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gun: {fileID: 8148334139697643455}
   pauseMenu: {fileID: 0}
-  portalPrefab: {fileID: 389506935872271867, guid: b17346557923dd74596b6e8fc8eb2c84,
+  damageMaterial: {fileID: 2100000, guid: 0616c11c95a86ee45af1fc23b8bce123, type: 2}
+  portalPrefab: {fileID: 1341470904983803376, guid: f1544dc7471f80d4f8c8a1afe16b2715,
     type: 3}
   audioListener: {fileID: 2198162082981012670}
   camera: {fileID: 4900032047395831533}

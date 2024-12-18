@@ -33,6 +33,7 @@ namespace PortalGame.World {
 
         private int currentLevelIndex;
         private Level currentLevel;
+        private bool isLoading = false;
 
         [SerializeField]
         private Player.Player player;
@@ -67,17 +68,26 @@ namespace PortalGame.World {
         }
 
         public void Load(int index, Action callback) {
-            if(index >= levelScenes.Count) {
+            if (isLoading) {
+                Debug.LogError("Eu ja estava carregando uma cena!");
+                return;
+            }
+
+            isLoading = true;
+            if (index >= levelScenes.Count) {
                 Debug.LogWarning("This scene does not exist!");
+                isLoading = false;
                 return;
             }
 
             if(scenesLoaded.Count <= index) {
                 // completar a lista
+                Debug.Log("Completando a lista de Loads");
                 scenesLoaded.AddRange(Enumerable.Repeat(false, index - scenesLoaded.Count + 1));
             }
             if (scenesLoaded[index]) {
                 Debug.LogWarning("This scene is already loaded!");
+                isLoading = false;
                 return;
             }
 
@@ -103,11 +113,13 @@ namespace PortalGame.World {
                 currentLevel = Array.Find(levels, (x) => x.LevelIndex == index);
                 if(currentLevel == null) {
                     Debug.LogError("Scene Loaded but Level script not found! Talvez o indice esteja errado??");
+                    isLoading = false;
                     return;
                 }
 
                 // deleta corredor antigo
                 if (previousLoadingCorridor != null) {
+                    Debug.Log("Deletando corredor anterior");
                     Destroy(previousLoadingCorridor.gameObject);
                 }
 
@@ -147,6 +159,7 @@ namespace PortalGame.World {
                 nextLoadingCorridor.StartDoor.BackMaterial = currentLevel.EndDoor.BackMaterial;
 
                 callback?.Invoke();
+                isLoading = false;
             };
         }
     

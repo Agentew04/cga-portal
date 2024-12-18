@@ -533,17 +533,6 @@ PrefabInstance:
       objectReference: {fileID: 1379975475}
     - target: {fileID: 3111256309209010901, guid: ff206a567777efc47b2f4861f681dbe7,
         type: 3}
-      propertyPath: portalPrefab
-      value: 
-      objectReference: {fileID: 1341470904983803376, guid: f1544dc7471f80d4f8c8a1afe16b2715,
-        type: 3}
-    - target: {fileID: 3111256309209010901, guid: ff206a567777efc47b2f4861f681dbe7,
-        type: 3}
-      propertyPath: damageMaterial
-      value: 
-      objectReference: {fileID: 2100000, guid: 0616c11c95a86ee45af1fc23b8bce123, type: 2}
-    - target: {fileID: 3111256309209010901, guid: ff206a567777efc47b2f4861f681dbe7,
-        type: 3}
       propertyPath: <RedPortal>k__BackingField
       value: 
       objectReference: {fileID: 0}

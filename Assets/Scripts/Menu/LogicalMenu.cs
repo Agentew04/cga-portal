@@ -35,6 +35,7 @@ namespace PortalGame.Menu
             int level = 0;
             var loadOp = SceneManager.LoadSceneAsync(gameplayScene.BuildIndex, LoadSceneMode.Additive);
             loadOp.completed += (op) => {
+                SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(gameplayScene.BuildIndex));
                 var roots = SceneManager.GetSceneByBuildIndex(gameplayScene.BuildIndex).GetRootGameObjects();
                 var manager = roots.FindFirstOf<LevelManager>();
                 manager.LockGameplay();
@@ -57,7 +58,7 @@ namespace PortalGame.Menu
                 Debug.Log("Ja estou carregando");
                 return;
             }
-            isLoading = true;
+            //isLoading = true;
 
             // get last played level
             if (!PlayerPrefs.HasKey("lastLevel")) {
@@ -66,6 +67,7 @@ namespace PortalGame.Menu
             int level = PlayerPrefs.GetInt("lastLevel");
 
             // load scenes at level x
+            LoadNewGame();
         }
 
         public static void Exit() {
