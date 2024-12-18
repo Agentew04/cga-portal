@@ -153,7 +153,7 @@ ReflectionProbe:
   m_Mode: 1
   m_RefreshMode: 0
   m_TimeSlicingMode: 1
-  m_Resolution: 128
+  m_Resolution: 256
   m_UpdateFrequency: 0
   m_BoxSize: {x: 8.278755, y: 6.2584314, z: 10.152035}
   m_BoxOffset: {x: -0.741169, y: -0.12635958, z: 0.51017475}
@@ -351,8 +351,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <LevelIndex>k__BackingField: 0
-  <StartDoorPosition>k__BackingField: {fileID: 6195337157083871164}
-  <EndDoorPosition>k__BackingField: {fileID: 3175560472039006862}
+  <StartDoor>k__BackingField: {fileID: 6107878497615803252}
+  <EndDoor>k__BackingField: {fileID: 3253870645209589318}
 --- !u!1 &8627659236044481186
 GameObject:
   m_ObjectHideFlags: 0
@@ -521,6 +521,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4295847469454552777}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3253870645209589318 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1636487405342066831, guid: dc5ca5d7dffd3c24088dc12c05b48a44,
+    type: 3}
+  m_PrefabInstance: {fileID: 4295847469454552777}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6491c5e42ff464ab0ef170d2d87635, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4789142514163678203
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -579,6 +591,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc5ca5d7dffd3c24088dc12c05b48a44, type: 3}
+--- !u!114 &6107878497615803252 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1636487405342066831, guid: dc5ca5d7dffd3c24088dc12c05b48a44,
+    type: 3}
+  m_PrefabInstance: {fileID: 4789142514163678203}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da6491c5e42ff464ab0ef170d2d87635, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6195337157083871164 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1696786066216930375, guid: dc5ca5d7dffd3c24088dc12c05b48a44,

@@ -751,7 +751,7 @@ MonoBehaviour:
   canSee: 1
   eyePosition: {fileID: 7884660959100621177}
   fieldOfView: 90
-  viewRaycasts: 10
+  viewRaycasts: 30
   viewDistance: 6.03
   attackDistance: 4.27
   canHear: 1
@@ -759,7 +759,7 @@ MonoBehaviour:
   currentHintPosition: {x: 0, y: 0, z: 0}
   investigateTime: 5
   investigationRadius: 5
-  damage: 10
+  damage: 20
   eyeMesh:
   - {fileID: 1305504741797410914}
   - {fileID: 4451346025187553964}

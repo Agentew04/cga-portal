@@ -68,6 +68,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HalfRow-White Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 8674638865242636400, guid: ffd34f376d38357478fa63da7700b5ee,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

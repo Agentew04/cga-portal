@@ -78,6 +78,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Quarter-Black
       objectReference: {fileID: 0}
+    - target: {fileID: 1006623632832056557, guid: 4707bfa8488bdb94fae3a8c0022a9d14,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4014570568489904716, guid: 4707bfa8488bdb94fae3a8c0022a9d14,
         type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

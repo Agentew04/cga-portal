@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: RefractionNormal
+  m_Name: RefractionNormalL5
   m_Shader: {fileID: -6465566751694194690, guid: a316f093b4788804c9cb8c954f8ecac9,
     type: 3}
   m_Parent: {fileID: 0}
@@ -52,22 +52,22 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _CastShadows: 1
-    - _ColorAttenuation: 0.45
-    - _Cull: 2
+    - _ColorAttenuation: 1
+    - _Cull: 0
     - _DstBlend: 10
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _SineTile: 196.7
     - _SrcBlend: 1
-    - _Strenght: 0.042
+    - _Strenght: 0.021
     - _Surface: 1
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - _Tiling: {r: 1, g: 0.2, b: 0, a: 0}
+    - _Tiling: {r: 1, g: 0.7, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &6867778351425001308

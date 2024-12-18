@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using PortalGame.World;
 using System.Transactions;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine.InputSystem.HID;
 
 namespace PortalGame.Player {
 
@@ -19,6 +21,9 @@ namespace PortalGame.Player {
 
         [SerializeField]
         private PauseMenu pauseMenu;
+
+        [SerializeField]
+        private Material damageMaterial;
 
         [SerializeField]
         private GameObject portalPrefab;
@@ -80,7 +85,6 @@ namespace PortalGame.Player {
 
             GrabUpdate();
             UpdateHealth();
-
             EnsureUpright();
 
             if (isLocked) {
@@ -88,7 +92,6 @@ namespace PortalGame.Player {
             }
 
             // a partir daqui so atualiza quando nao pausado
-
             if(Input.GetMouseButtonDown(0)){
                 Click(PortalType.Blue);
             } else if (Input.GetMouseButtonDown(1)) {
@@ -100,6 +103,9 @@ namespace PortalGame.Player {
             }
         }
 
+        /// <summary>
+        /// Renderiza os portais e suas recursoes etc.
+        /// </summary>
         private void RenderPortals(ScriptableRenderContext ctx, Camera cam) {
             if(BluePortal == null || RedPortal == null) {
                 return;
@@ -117,6 +123,10 @@ namespace PortalGame.Player {
             RedPortal.PostPortalRender();
         }
 
+        /// <summary>
+        /// Callback quando o jogador clica para atirar num portal
+        /// </summary>
+        /// <param name="type">O tipo do portal atirado(BEM ou BDM)</param>
         private void Click(PortalType type) {
             if(fpsController.BlockMovement) {
                 return;
@@ -137,35 +147,7 @@ namespace PortalGame.Player {
 
             Portal portal = type == PortalType.Blue ? BluePortal : RedPortal;
 
-            List<Collider> portalWallColliders = new();
-            if (validSurface) {
-                // save old values
-                Vector3 oldPosition = portal != null ? portal.transform.position : Vector3.zero;
-                Quaternion oldRotation = portal != null ? portal.transform.rotation : Quaternion.identity;
-                // move and rotate to new position
-                bool wasnull = portal == null;
-                if (portal == null) {
-                    wasnull = true;
-                    portal = CreatePortal(type);
-                    portal.PortalType = type;
-                }
-                var rot = (type == PortalType.Orange ? -1 : 1) * hit.normal;
-                portal.transform.SetPositionAndRotation(hit.point + hit.normal * 0.05f, Quaternion.LookRotation(rot, Vector3.up));
-                Physics.SyncTransforms();
-                if (!PortalFits(portal, hit.normal, out portalWallColliders)) {
-                    validSurface = false;
-                }
-                if (wasnull) {
-                    // destroi portal de testes
-                    Destroy(portal.gameObject);
-                    portal = null;
-                } else {
-                    // volta para a posicao original
-                    portal.transform.SetPositionAndRotation(oldPosition, oldRotation);
-                }
-                Physics.SyncTransforms();
-            }
-
+            validSurface = CheckPortalPlacement(portal, type, ref hit, validSurface, out var portalWallColliders);
 
             Debug.DrawLine(ray.origin, hit.point, Color.red, 5);
             gun.ShootProjectile(type, validSurface, () => {
@@ -196,6 +178,54 @@ namespace PortalGame.Player {
             });
         }
 
+        /// <summary>
+        /// Verifica se o portal realmente cabe no lugar que o jogador atirou
+        /// e se todas as superficies sao validas
+        /// </summary>
+        /// <param name="portal">O portal atual. Pode ser null</param>
+        /// <param name="type">O tipo de portal que o jogador atirou</param>
+        /// <param name="hit">O resultado do raycast</param>
+        /// <param name="validSurface">Se a superficie batida eh valida ou nao</param>
+        /// <param name="portalWallColliders">A lista dos colisores atras do portal</param>
+        /// <returns>Se o portal pode ser colocado ali ou nao</returns>
+        private bool CheckPortalPlacement(Portal portal, PortalType type, ref RaycastHit hit, 
+                bool validSurface, out List<Collider> portalWallColliders) {
+            if (!validSurface) {
+                portalWallColliders = new();
+                return false;
+            }
+            // save old values
+            Vector3 oldPosition = portal != null ? portal.transform.position : Vector3.zero;
+            Quaternion oldRotation = portal != null ? portal.transform.rotation : Quaternion.identity;
+            // move and rotate to new position
+            bool wasnull = portal == null;
+            if (portal == null) {
+                wasnull = true;
+                portal = CreatePortal(type);
+                portal.PortalType = type;
+            }
+            var rot = (type == PortalType.Orange ? -1 : 1) * hit.normal;
+            portal.transform.SetPositionAndRotation(hit.point + hit.normal * 0.05f, Quaternion.LookRotation(rot, Vector3.up));
+            Physics.SyncTransforms();
+            if (!PortalFits(portal, hit.normal, out portalWallColliders)) {
+                validSurface = false;
+            }
+            if (wasnull) {
+                // destroi portal de testes
+                Destroy(portal.gameObject);
+            } else {
+                // volta para a posicao original
+                portal.transform.SetPositionAndRotation(oldPosition, oldRotation);
+            }
+            Physics.SyncTransforms();
+            return validSurface;
+        }
+
+        /// <summary>
+        /// Cria um portal novo a partir do prefab e seta o tipo dele.
+        /// </summary>
+        /// <param name="type">O tipo do portal a ser criado</param>
+        /// <returns>O portal criado</returns>
         private Portal CreatePortal(PortalType type) {
             GameObject portal = Instantiate(portalPrefab, Vector3.zero, Quaternion.identity);
             portal.name = "Portal " + type;
@@ -204,6 +234,9 @@ namespace PortalGame.Player {
             return p;
         }
 
+        /// <summary>
+        /// Limpa quaisquer portais jogados pelo player
+        /// </summary>
         public void ClearPortals() {
             Debug.Log("Limpando portais do usuario");
             if (BluePortal != null) {
@@ -219,6 +252,13 @@ namespace PortalGame.Player {
             gun.Fizzle();
         }
 
+        /// <summary>
+        /// Verifica se um portal cabe num lugar
+        /// </summary>
+        /// <param name="p">O portal a ser testado</param>
+        /// <param name="normal">A normal da superficie</param>
+        /// <param name="colliders">Saida da lista dos colisores atingidos</param>
+        /// <returns></returns>
         private static bool PortalFits(Portal p, Vector3 normal, out List<Collider> colliders) {
             // draw the p position
             Debug.DrawRay(p.PortalBorderCollider.transform.position, p.PortalBorderCollider.transform.right, Color.red, 1);
@@ -257,6 +297,11 @@ namespace PortalGame.Player {
             }
         }
 
+        /// <summary>
+        /// Determina se o jogador ouve audio ou nao.
+        /// Eh para a cena de loading, o player n ouvir a porta fechando
+        /// </summary>
+        /// <param name="muteState"></param>
         public void SetMute(bool muteState) {
             isMuted = muteState;
             audioListener.enabled = !muteState;
@@ -271,22 +316,43 @@ namespace PortalGame.Player {
             currentHealth -= damageAmount;
             if(currentHealth <= 0) {
                 currentHealth = 0;
-                // morreu!
                 Debug.Log("Morreu!");
-                // TODO: eh o fim!!! MOVER ISSO NAO DEIXAR ISSO NO FINAL!!!
-                Destroy(fpsController.gameObject);
+                pauseMenu.ShowDeathScreen();
+                Destroy(fpsController.gameObject); // bye bye player
+                // LevelManager se encarrega de nos spawnar dnv
             }
         }
 
+        /// <summary>
+        /// Cuida se o jogador já está apto a regenerar vida
+        /// </summary>
         private void UpdateHealth() {
+            // isso ta aqui soh pra teste, nao precisaria na teoria
+            if(currentHealth <= 0) {
+                Debug.Log("Morreu!");
+                pauseMenu.ShowDeathScreen();
+                Destroy(fpsController.gameObject); // bye bye player
+            }
+            
+            // atualiza material de dano!
+            // 0: 100 health
+            // 1: 0 health
+            float fade = 1 - currentHealth / maxHealth;
+            damageMaterial.SetFloat("_FadeValue", fade);
+
             if (Time.time - lastCombatTime > combatTimer && currentHealth < maxHealth) {
                 currentHealth += regenRate * Time.deltaTime;
                 if (currentHealth > maxHealth) {
                     currentHealth = maxHealth;
                 }
             }
+
         }
 
+        /// <summary>
+        /// Garante que o jogador esteja sempre em pe, depois
+        /// de passar por um portal
+        /// </summary>
         private void EnsureUpright() {
             // rotacao do fpsController sempre é projetada no chao
             // get upwards quaternion
@@ -303,6 +369,13 @@ namespace PortalGame.Player {
 
         }
 
+        /// <summary>
+        /// Move a caixa que o jogador esta segurando
+        /// para a posicao desejada. 
+        /// </summary>
+        /// <remarks>Ela vai ficar flutuando tipo fantasma. 
+        /// Talvez usar as joints igual na RMD?
+        /// </remarks>
         private void GrabUpdate() {
             if (grabbed != null && grabbed.TryGetComponent(out Rigidbody rb)) {
                 var force = (grabPoint.position - grabbed.transform.position);
@@ -311,6 +384,9 @@ namespace PortalGame.Player {
             }
         }
 
+        /// <summary>
+        /// Pega um objeto
+        /// </summary>
         private void GrabObject() {
             if(grabbed != null) {
                 // solta objeto
@@ -353,8 +429,6 @@ namespace PortalGame.Player {
                 rb2.useGravity = false;
                 lastAngularDamping = rb2.angularDamping;
                 lastLinearDamping = rb2.linearDamping;
-                //rb2.angularDamping = 1000;
-                //rb2.linearDamping = 1000;
             }
         }
 

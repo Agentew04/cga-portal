@@ -61,6 +61,9 @@ namespace PortalGame.World {
         }
 
         private void Update() {
+            if(fpsController == null) {
+                return; // previne erro quando o jogador morre
+            }
             Transform player = fpsController.transform;
             float distance = Vector3.Distance(player.position, transform.position);
             AutoOpenSide side = GetSide(player);

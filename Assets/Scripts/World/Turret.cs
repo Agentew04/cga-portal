@@ -111,7 +111,7 @@ namespace PortalGame.World {
         }
 
         private void OnDisable() {
-            TurretManager.Instance.Unregister(this);
+            //TurretManager.Instance.Unregister(this);
         }
 
         private void OnDrawGizmos() {

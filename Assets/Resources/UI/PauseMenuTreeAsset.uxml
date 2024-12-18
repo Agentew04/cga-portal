@@ -6,6 +6,11 @@
             <ui:Label tabindex="-1" text="Aperture Labs" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title" style="color: rgb(255, 255, 255); align-self: center; font-size: 75%; -unity-font: resource(&apos;UI/Fonts/UniversRegular&apos;); -unity-font-definition: resource(&apos;UI/Fonts/UniversRegular SDF&apos;); margin-bottom: 129px;" />
             <ui:Button text="Main Menu" parse-escape-sequences="true" display-tooltip-when-elided="true" name="MainMenuButton" class="menubutton" />
         </ui:VisualElement>
-        <ui:VisualElement name="Blur" class="pauseBackground-hidden pauseBackground" style="flex-grow: 1; opacity: 1;" />
+        <ui:VisualElement name="Blur" class="pauseBackground" style="flex-grow: 1; opacity: 1;">
+            <ui:VisualElement name="DeathContainer" class="Death Death-hidden" style="flex-grow: 1; align-items: center; justify-content: center; align-self: center; background-color: rgba(43, 0, 0, 0.78); width: 50%; height: auto; flex-direction: column; flex-wrap: nowrap; align-content: flex-start; transition-duration: 1s; transition-timing-function: ease-in-out;">
+                <ui:Label text="Você morreu!" name="DeathTitle" style="font-size: 71%; -unity-font-definition: resource(&apos;UI/Fonts/UniversBold&apos;); color: rgb(255, 255, 255);" />
+                <ui:Button text="Reiniciar" name="RestartButton" class="menubutton" style="margin-top: 10%;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

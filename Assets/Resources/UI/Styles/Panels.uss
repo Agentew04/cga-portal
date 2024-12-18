@@ -23,3 +23,14 @@
     background-color: rgba(0, 0, 0, 0);
     width: 100%;
 }
+
+.Death {
+    transition-duration: 1s;
+    transition-timing-function: ease-in-out;
+}
+
+.Death-hidden {
+    top: -100%;
+    transition-duration: 1s;
+    transition-timing-function: ease-in-out;
+}

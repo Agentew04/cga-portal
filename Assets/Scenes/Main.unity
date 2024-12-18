@@ -539,6 +539,11 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 3111256309209010901, guid: ff206a567777efc47b2f4861f681dbe7,
         type: 3}
+      propertyPath: damageMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 0616c11c95a86ee45af1fc23b8bce123, type: 2}
+    - target: {fileID: 3111256309209010901, guid: ff206a567777efc47b2f4861f681dbe7,
+        type: 3}
       propertyPath: <RedPortal>k__BackingField
       value: 
       objectReference: {fileID: 0}
@@ -1183,7 +1188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78746dc0c595bdc47bdaa7bdc5b90c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadOnStart: 1
+  loadOnStart: 0
   levelScenes:
   - asset: {fileID: 102900000, guid: 83f6cfe76808e4e4ea32425f1bafbbee, type: 3}
     guid: 83f6cfe76808e4e4ea32425f1bafbbee
@@ -1193,6 +1198,8 @@ MonoBehaviour:
     guid: a2a6684a41c2ad24cb52126129e15103
   - asset: {fileID: 102900000, guid: aaf8c3b5a2dd7234ca9dc5b879c4a809, type: 3}
     guid: aaf8c3b5a2dd7234ca9dc5b879c4a809
+  - asset: {fileID: 102900000, guid: 6487972c22cd33e429881c234277bf84, type: 3}
+    guid: 6487972c22cd33e429881c234277bf84
   loadingRoomPrefab: {fileID: 3724394202165194378, guid: ab6f6ea47225ef54db7671e2dec7ba95,
     type: 3}
   previousLoadingCorridor: {fileID: 0}
@@ -1327,6 +1334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ui: {fileID: 1379975476}
+  levelManager: {fileID: 907005047}
 --- !u!114 &1379975476
 MonoBehaviour:
   m_ObjectHideFlags: 0

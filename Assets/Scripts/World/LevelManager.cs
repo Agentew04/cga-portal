@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using System;
 using static UnityEngine.GraphicsBuffer;
+using System.Collections;
 
 namespace PortalGame.World {
 
@@ -25,13 +26,13 @@ namespace PortalGame.World {
         [Header("Referencias")]
         [SerializeField]
         private GameObject loadingRoomPrefab;
-
-        private int currentLevelIndex;
-        private Level currentLevel;
         [SerializeField]
         private WaitRoom previousLoadingCorridor;
         [SerializeField]
         private WaitRoom nextLoadingCorridor;
+
+        private int currentLevelIndex;
+        private Level currentLevel;
 
         [SerializeField]
         private Player.Player player;
@@ -80,6 +81,7 @@ namespace PortalGame.World {
                 return;
             }
 
+            Debug.LogFormat("Carregando cena {0}", index);
 
             // descarrega cena atual
             if (currentLevel != null) {
@@ -92,9 +94,7 @@ namespace PortalGame.World {
             }
 
             var op = SceneManager.LoadSceneAsync(levelScenes[index].BuildIndex, LoadSceneMode.Additive);
-            Debug.Log("Request made");
             op.completed += (op) => {
-                Debug.Log("Scene Loaded");
                 scenesLoaded[index] = true;
 
                 currentLevelIndex = index;
@@ -108,7 +108,6 @@ namespace PortalGame.World {
 
                 // deleta corredor antigo
                 if (previousLoadingCorridor != null) {
-                    Debug.Log("Deletando corredor: "+previousLoadingCorridor.gameObject.name);
                     Destroy(previousLoadingCorridor.gameObject);
                 }
 
@@ -149,19 +148,16 @@ namespace PortalGame.World {
 
                 callback?.Invoke();
             };
-            Debug.Log("Setted callback");
         }
     
-        private abstract class ScenePart { 
-            public bool StartDoorEnabled { get; set; }
-            public bool EndDoorEnabled { get; set; }
-            public bool Loaded { get; set; }
+        public static void GoToMainMenu() {
+            SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
         }
-        private class SceneLevel : ScenePart {
-            public int LevelIndex { get; set; }
-        }
-        private class SceneConnector : ScenePart { 
-            public GameObject Root { get; set; }
+
+        public void Restart() {
+            // cria um resetter
+            var resetter = new GameObject("Resetter").AddComponent<Resetter>();
+            resetter.ResetGame();
         }
     }
 }
