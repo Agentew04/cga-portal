@@ -1,12 +1,9 @@
 using PortalGame.World;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
 
-namespace PortalGame
-{
+namespace PortalGame {
     /// <summary>
     /// Script que gerencia a tela de pausa
     /// </summary>

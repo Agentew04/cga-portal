@@ -1,7 +1,5 @@
 using PortalGame.Player;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PortalGame.World {
@@ -89,6 +87,9 @@ namespace PortalGame.World {
 
         public void Close() {
             if (IsLocked) {
+                return;
+            }
+            if(!IsOpen) {
                 return;
             }
             animator.SetTrigger("Close");

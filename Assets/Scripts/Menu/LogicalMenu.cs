@@ -2,12 +2,10 @@ using Eflatun.SceneReference;
 using PortalGame.World;
 using System;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace PortalGame.Menu
-{
+namespace PortalGame.Menu {
     /// <summary>
     /// Classe que agrega a logica dos botoes 
     /// do menu principal.

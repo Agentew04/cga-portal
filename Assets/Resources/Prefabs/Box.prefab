@@ -238,6 +238,12 @@ MeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 6215921478396313892}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &2841904682008108354 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8156892929119771750, guid: da2be51219f328b458bd52e4f642862a,
+    type: 3}
+  m_PrefabInstance: {fileID: 6215921478396313892}
+  m_PrefabAsset: {fileID: 0}
 --- !u!23 &6494236897465436118 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 892638147104540402, guid: da2be51219f328b458bd52e4f642862a,
@@ -274,7 +280,8 @@ LODGroup:
     - renderer: {fileID: 6494236897465436118}
   - screenRelativeHeight: 0.2285657
     fadeTransitionWidth: 0
-    renderers: []
+    renderers:
+    - renderer: {fileID: 2841904682008108354}
   - screenRelativeHeight: 0.087073706
     fadeTransitionWidth: 0
     renderers:

@@ -4,8 +4,6 @@ using Eflatun.SceneReference;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using System;
-using static UnityEngine.GraphicsBuffer;
-using System.Collections;
 
 namespace PortalGame.World {
 

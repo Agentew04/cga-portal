@@ -1,11 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
-using System.Net.NetworkInformation;
-using Mono.Cecil;
 
 namespace PortalGame.World {
 
@@ -88,6 +84,7 @@ namespace PortalGame.World {
 
         private NavMeshAgent navMeshAgent;
         private Animator animator;
+        private AudioSource audioSource;
         private float patrolTimer;
         private Player.Player player; // usado para aplicar dano
 
@@ -104,6 +101,7 @@ namespace PortalGame.World {
             navMeshAgent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
             player = FindAnyObjectByType<Player.Player>();
+            audioSource = GetComponent<AudioSource>();
         }
 
         private void OnEnable() {
@@ -198,9 +196,17 @@ namespace PortalGame.World {
         }
 
         private void Update() {
+            if(currentState == TurretState.Attacking && !audioSource.isPlaying) {
+                Debug.Log("Trocando clipe");
+                audioSource.clip = AudioManager.Instance.GetAudio(AudioType.TurretFire);
+                audioSource.Play();
+            }else if(currentState != TurretState.Attacking) {
+                audioSource.Stop();
+            }
 
             SeeForward();
             FSM();
+
         }
 
         private void FSM() {

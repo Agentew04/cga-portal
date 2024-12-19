@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace PortalGame.World
-{
+namespace PortalGame.World {
     public class Resetter : MonoBehaviour
     {
         

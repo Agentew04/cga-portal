@@ -1,9 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor;
 
-namespace PortalGame.World
-{
+namespace PortalGame.World {
     /// <summary>
     /// Classe que controla um botao no jogo
     /// </summary>

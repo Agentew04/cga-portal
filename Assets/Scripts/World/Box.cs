@@ -11,6 +11,7 @@ namespace PortalGame
         private AudioSource audioSource;
 
         private void OnCollisionEnter(Collision collision) {
+            Debug.Log("colisao cubo entrada");
             if (audioSource.isPlaying) {
                 audioSource.Stop();
             }

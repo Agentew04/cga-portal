@@ -1,11 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using PortalGame.World;
-using System.Transactions;
-using UnityEditor.Experimental.GraphView;
-using UnityEngine.InputSystem.HID;
 
 namespace PortalGame.Player {
 
